@@ -1,0 +1,248 @@
+/* ============================================================
+   badge.css — Style du Badge Imprimable (style CHU)
+   ============================================================ */
+
+/* Conteneur badge (visible à l'écran dans la modal) */
+.badge-preview-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Zone de contrôle impression (cachée à l'impression) */
+.badge-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* ============================================================
+   LE BADGE — Design CHU identique à l'image
+   ============================================================ */
+.patient-badge {
+  width: 240px;
+  min-height: 340px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25), 0 2px 8px rgba(0,0,0,.15);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Cairo', 'Inter', sans-serif;
+  page-break-inside: avoid;
+}
+
+/* Clip porte-badge en haut */
+.badge-clip {
+  width: 40px;
+  height: 22px;
+  background: #CBD5E0;
+  border-radius: 4px 4px 0 0;
+  margin: 0 auto -2px;
+  z-index: 2;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.2);
+}
+
+.badge-clip::after {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 8px;
+  background: #A0AEC0;
+  border-radius: 3px;
+  margin: 6px auto 0;
+}
+
+/* Corps principal */
+.badge-body {
+  width: 100%;
+  flex: 1;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Couleurs selon type */
+.patient-badge.psychiatrie  .badge-body { background: linear-gradient(160deg, #1B5E20 0%, #2E7D32 50%, #43A047 100%); }
+.patient-badge.psychotherapie .badge-body { background: linear-gradient(160deg, #0D47A1 0%, #1565C0 50%, #1E88E5 100%); }
+
+/* Zone logo en haut */
+.badge-top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 16px 14px;
+  position: relative;
+}
+
+/* Vague décorative */
+.badge-top::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: -10%;
+  width: 120%;
+  height: 40px;
+  background: rgba(255,255,255,.12);
+  border-radius: 50%;
+}
+
+.badge-logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  margin-bottom: 6px;
+}
+
+.badge-chu-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: rgba(255,255,255,.95);
+  letter-spacing: 3px;
+}
+
+/* Vague blanche centrale */
+.badge-wave {
+  width: 100%;
+  line-height: 0;
+}
+.badge-wave svg { width: 100%; height: 30px; }
+
+/* Zone numéro */
+.badge-number-zone {
+  background: white;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px 16px;
+}
+
+.badge-number {
+  font-family: 'Cairo', sans-serif;
+  font-size: 76px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.patient-badge.psychiatrie  .badge-number { color: #2E7D32; }
+.patient-badge.psychotherapie .badge-number { color: #1565C0; }
+
+.badge-type-ar {
+  font-family: 'Cairo', sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.4;
+  direction: rtl;
+}
+.badge-type-fr {
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: .3px;
+  margin-top: 2px;
+}
+.patient-badge.psychiatrie  .badge-type-ar,
+.patient-badge.psychiatrie  .badge-type-fr { color: #2E7D32; }
+.patient-badge.psychotherapie .badge-type-ar,
+.patient-badge.psychotherapie .badge-type-fr { color: #1565C0; }
+
+/* Ligne séparatrice */
+.badge-sep {
+  width: 60%;
+  height: 1px;
+  margin: 10px auto;
+  opacity: .2;
+}
+.patient-badge.psychiatrie  .badge-sep { background: #2E7D32; }
+.patient-badge.psychotherapie .badge-sep { background: #1565C0; }
+
+/* Zone médecin (optionnel) */
+.badge-medecin {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-align: center;
+  color: #4A5568;
+  padding: 0 12px;
+  margin-top: 4px;
+}
+
+/* Pied de page coloré */
+.badge-footer {
+  width: 100%;
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.patient-badge.psychiatrie  .badge-footer { background: linear-gradient(0deg, #1B5E20, #2E7D32); }
+.patient-badge.psychotherapie .badge-footer { background: linear-gradient(0deg, #0D47A1, #1565C0); }
+
+.badge-footer-ar {
+  font-family: 'Cairo', sans-serif;
+  font-size: 9px;
+  color: rgba(255,255,255,.9);
+  direction: rtl;
+  text-align: center;
+}
+.badge-footer-fr {
+  font-size: 8.5px;
+  color: rgba(255,255,255,.7);
+  letter-spacing: .3px;
+  text-align: center;
+}
+
+/* ============================================================
+   IMPRESSION @media print
+   ============================================================ */
+@media print {
+  body * { visibility: hidden !important; }
+
+  .patient-badge,
+  .patient-badge * { visibility: visible !important; }
+
+  .badge-clip { visibility: visible !important; }
+
+  body {
+    background: white !important;
+    margin: 0;
+    padding: 0;
+  }
+
+  .patient-badge {
+    position: fixed !important;
+    top: 20mm;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 54mm;
+    min-height: 85mm;
+    box-shadow: none !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .patient-badge .badge-number { font-size: 28mm !important; }
+  .patient-badge .badge-type-ar { font-size: 5.5mm !important; }
+  .patient-badge .badge-type-fr { font-size: 4.5mm !important; }
+  .patient-badge .badge-footer-ar { font-size: 3.5mm !important; }
+  .patient-badge .badge-footer-fr { font-size: 3mm !important; }
+  .patient-badge .badge-chu-title { font-size: 7mm !important; }
+  .patient-badge .badge-logo-img { width: 16mm !important; height: 16mm !important; }
+
+  @page {
+    size: 54mm 90mm;
+    margin: 0;
+  }
+}

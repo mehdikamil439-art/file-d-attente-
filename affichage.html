@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>شاشة الاستقبال — مستشفى الجامعي للطب النفسي</title>
+  <meta name="description" content="شاشة عرض أرقام الدور — مستشفى الجامعي للطب النفسي طنجة">
+  <link rel="stylesheet" href="css/affichage.css">
+</head>
+<body>
+  <div class="tv-layout">
+
+    <!-- HEADER -->
+    <header class="tv-header">
+      <!-- Nom hôpital (droite en RTL) -->
+      <div class="tv-hospital-name">
+        <div class="tv-hospital-ar">مستشفى الجامعي للطب النفسي</div>
+        <div class="tv-hospital-fr">Hôpital Universitaire Psychiatrique — Tanger</div>
+      </div>
+
+      <!-- Horloge (centre) -->
+      <div class="tv-clock">
+        <div class="tv-time" id="tv-time">00:00:00</div>
+        <div class="tv-date" id="tv-date"></div>
+      </div>
+
+      <!-- Logo + Live (gauche en RTL) -->
+      <div class="tv-logo">
+        <img src="assets/logo-chu.png" alt="CHU">
+        <div class="live-indicator" id="live-indicator" style="display:none;">
+          <div class="live-dot"></div>
+          <span>مباشر</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- BODY — Grille des appels -->
+    <main class="tv-body">
+      <!-- Titre section -->
+      <div class="tv-section-title">📢 الأرقام المستدعاة</div>
+
+      <!-- État vide -->
+      <div class="tv-empty" id="tv-empty">
+        <div class="tv-empty-icon">🏥</div>
+        <div class="tv-empty-text">في انتظار استدعاء المرضى</div>
+      </div>
+
+      <!-- Grille des appels (remplie dynamiquement) -->
+      <div class="tv-calls-grid" id="calls-grid"></div>
+    </main>
+
+    <!-- TICKER BAS -->
+    <footer class="tv-ticker">
+      <div class="tv-ticker-label">
+        <span>📢</span>
+        <span>تنبيه</span>
+      </div>
+      <div class="tv-ticker-content" id="ticker-content"></div>
+    </footer>
+
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/affichage.js"></script>
+</body>
+</html>

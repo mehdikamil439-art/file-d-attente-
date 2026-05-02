@@ -1,0 +1,288 @@
+/* ============================================================
+   salle.css — Page Médecin (par salle)
+   ============================================================ */
+
+/* ============================================================
+   HERO SALLE — En-tête coloré
+   ============================================================ */
+.salle-hero {
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.salle-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: .06;
+  z-index: 0;
+}
+
+.salle-hero.psychiatrie::before   { background: var(--psy-grad); }
+.salle-hero.psychotherapie::before { background: var(--psy2-grad); }
+
+.salle-hero > * { position: relative; z-index: 1; }
+
+.salle-info { display: flex; flex-direction: column; gap: 4px; }
+
+.salle-num-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.salle-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.salle-type-badge {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: 'Cairo', sans-serif;
+}
+
+.salle-hero.psychiatrie  .salle-type-badge { background: var(--psy-light); color: var(--psy-dark); border: 1px solid var(--psy-border); }
+.salle-hero.psychotherapie .salle-type-badge { background: var(--psy2-light); color: var(--psy2-dark); border: 1px solid var(--psy2-border); }
+
+.salle-doctor {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.doctor-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.salle-hero.psychiatrie   .doctor-avatar { background: var(--psy-light); }
+.salle-hero.psychotherapie .doctor-avatar { background: var(--psy2-light); }
+
+.doctor-info { display: flex; flex-direction: column; gap: 2px; }
+.doctor-name { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.doctor-sub  { font-size: 12px; color: var(--text-muted); }
+
+/* ============================================================
+   GRILLE PRINCIPALE SALLE
+   ============================================================ */
+.salle-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  padding: 24px 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ============================================================
+   PATIENT COURANT (appelé)
+   ============================================================ */
+.current-patient-card {
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  border: 2px solid;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.current-patient-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: .05;
+  z-index: 0;
+}
+
+.current-patient-card.psychiatrie { border-color: var(--psy-border); background: var(--psy-light); }
+.current-patient-card.psychiatrie::before { background: var(--psy-grad); }
+
+.current-patient-card.psychotherapie { border-color: var(--psy2-border); background: var(--psy2-light); }
+.current-patient-card.psychotherapie::before { background: var(--psy2-grad); }
+
+.current-patient-card > * { position: relative; z-index: 1; }
+
+.current-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+.current-patient-card.psychiatrie  .current-label { color: var(--psy-dark); }
+.current-patient-card.psychotherapie .current-label { color: var(--psy2-dark); }
+
+.current-num {
+  font-size: 80px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -3px;
+}
+.current-patient-card.psychiatrie  .current-num { color: var(--psy-color); }
+.current-patient-card.psychotherapie .current-num { color: var(--psy2-color); }
+
+.current-name { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+.current-time { font-size: 13px; color: var(--text-muted); }
+
+/* ============================================================
+   ACTIONS MÉDECIN
+   ============================================================ */
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-call {
+  flex: 1;
+  padding: 16px 20px;
+  font-size: 16px;
+  border-radius: var(--radius-lg);
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-width: 200px;
+}
+
+.btn-call:active { transform: scale(.97); }
+.btn-call:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+.btn-call-next { background: #1E293B; color: #fff; box-shadow: var(--shadow); }
+.btn-call-next:hover:not(:disabled) { background: #0F172A; box-shadow: var(--shadow-lg); }
+
+.btn-call-done { background: var(--psy-color); color: #fff; box-shadow: var(--shadow); }
+.btn-call-done:hover:not(:disabled) { background: var(--psy-dark); box-shadow: var(--shadow-lg); }
+
+.btn-call-arrived { background: var(--psy2-color); color: #fff; box-shadow: var(--shadow); }
+.btn-call-arrived:hover:not(:disabled) { background: var(--psy2-dark); box-shadow: var(--shadow-lg); }
+
+/* ============================================================
+   LISTE PATIENTS EN ATTENTE
+   ============================================================ */
+.queue-list { display: flex; flex-direction: column; gap: 8px; }
+
+.queue-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+.queue-item:hover { box-shadow: var(--shadow-sm); border-color: #CBD5E0; }
+
+.queue-item-num {
+  width: 40px; height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.queue-item-num.psychiatrie  { background: var(--psy-grad); }
+.queue-item-num.psychotherapie { background: var(--psy2-grad); }
+
+.queue-item-info { flex: 1; }
+.queue-item-name { font-weight: 600; font-size: 14px; color: var(--text-primary); }
+.queue-item-time { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+
+.queue-position { font-size: 12px; font-weight: 700; color: var(--text-muted); padding: 3px 8px; background: var(--bg); border-radius: var(--radius-sm); }
+
+/* ============================================================
+   PANNEAU LATÉRAL
+   ============================================================ */
+.sidebar-panel { display: flex; flex-direction: column; gap: 16px; }
+
+/* Compteurs */
+.counters-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.counter-box {
+  text-align: center;
+  padding: 14px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.counter-value { font-size: 30px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+.counter-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
+
+/* ============================================================
+   HISTORIQUE
+   ============================================================ */
+.history-list { display: flex; flex-direction: column; gap: 6px; max-height: 300px; overflow-y: auto; }
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.history-item-num {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 12px;
+  color: #fff;
+  flex-shrink: 0;
+  opacity: .7;
+}
+.history-item-num.psychiatrie  { background: var(--psy-color); }
+.history-item-num.psychotherapie { background: var(--psy2-color); }
+
+.history-item-info { flex: 1; }
+.history-item-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.history-item-time { font-size: 11px; color: var(--text-muted); }
+
+.history-statut { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+  .salle-layout { grid-template-columns: 1fr; }
+  .salle-hero { flex-direction: column; align-items: flex-start; gap: 16px; }
+}

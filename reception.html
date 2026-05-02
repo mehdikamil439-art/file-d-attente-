@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réception — File d'Attente CHU</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/badge.css">
+  <style>
+    .reception-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .type-indicator {
+      display: none;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      font-family: 'Cairo', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid;
+      margin-top: 8px;
+      text-align: center;
+      direction: rtl;
+    }
+
+    .form-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .table-toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .affectations-section { margin-top: 24px; }
+    .affectations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+
+    @media (max-width: 1000px) {
+      .reception-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a href="index.html" class="topbar-brand">
+    <img src="assets/logo-chu.png" alt="CHU">
+    <span>CHU Psychiatrique<small>Hôpital Universitaire — Tanger</small></span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="reception.html" class="nav-link active" id="nav-reception">🏥 Réception</a>
+    <a href="affichage.html" class="nav-link" id="nav-affichage" target="_blank">📺 Affichage</a>
+    <a href="admin.html" class="nav-link" id="nav-admin">⚙️ Admin</a>
+  </nav>
+</header>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>🏥 Réception</h1>
+  <p>Enregistrer les patients et imprimer les badges de passage</p>
+</div>
+
+<!-- STATS -->
+<div class="main-content">
+  <div class="stats-grid" style="margin-bottom:24px;">
+    <div class="stat-card">
+      <div class="stat-value" id="stat-total" style="color:var(--text-primary);">0</div>
+      <div class="stat-label">Total patients</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-attente" style="color:var(--warning);">0</div>
+      <div class="stat-label">En attente</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-termine" style="color:var(--success);">0</div>
+      <div class="stat-label">Terminés</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-psy" style="color:var(--psy-color);">0</div>
+      <div class="stat-label">Psychiatrie</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="stat-psycho" style="color:var(--psy2-color);">0</div>
+      <div class="stat-label">Psychothérapie</div>
+    </div>
+  </div>
+
+  <div class="reception-grid">
+
+    <!-- FORMULAIRE -->
+    <div>
+      <div class="card">
+        <div class="card-header">
+          <h2 id="form-title">✨ Nouveau patient</h2>
+        </div>
+        <div class="card-body">
+          <form id="form-patient" autocomplete="off">
+
+            <div class="form-section-title">👤 Identité du patient</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="nom">Nom *</label>
+                <input type="text" id="nom" class="form-control" placeholder="NOM" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="prenom">Prénom *</label>
+                <input type="text" id="prenom" class="form-control" placeholder="Prénom" required>
+              </div>
+            </div>
+
+            <div class="form-section-title" style="margin-top:16px;">🏥 Consultation</div>
+
+            <div class="form-group">
+              <label class="form-label" for="type-consultation">Type de consultation *</label>
+              <select id="type-consultation" class="form-control" required>
+                <option value="">— Choisir le type —</option>
+                <option value="psychiatrie">🧠 Consultation Psychiatrique</option>
+                <option value="psychotherapie">💬 Psychothérapie Individuelle</option>
+              </select>
+              <div id="type-indicator" class="type-indicator"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="medecin-select">Médecin *</label>
+              <select id="medecin-select" class="form-control" required>
+                <option value="">— Choisir un médecin —</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="salle-select">Salle *</label>
+              <select id="salle-select" class="form-control" required>
+                <option value="">— Choisir une salle —</option>
+              </select>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">
+                Psychiatrie → Salles 1, 3, 4, 5, 6 &nbsp;|&nbsp; Psychothérapie → Salle 2
+              </div>
+            </div>
+
+            <button type="submit" id="btn-submit" class="btn btn-success btn-lg" style="width:100%;margin-top:8px;">
+              ✅ Enregistrer le patient
+            </button>
+
+            <button type="button" class="btn btn-outline" style="width:100%;margin-top:8px;" onclick="resetForm()">
+              ↩️ Annuler / Réinitialiser
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- CONFIGURATION MATIN -->
+      <div class="card affectations-section">
+        <div class="card-header">
+          <h2>📋 Affectation des salles (ce matin)</h2>
+        </div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">
+            Assignez un médecin à chaque salle pour aujourd'hui.
+          </p>
+          <div id="affectations-grid" class="affectations-grid">
+            <div class="empty-state" style="padding:20px;">
+              <div class="spinner"></div>
+              <p>Chargement...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLEAU PATIENTS -->
+    <div class="card">
+      <div class="card-header">
+        <h2>📋 File d'attente du jour</h2>
+        <button class="btn btn-sm btn-outline" onclick="loadPatientsDuJour()">🔄 Actualiser</button>
+      </div>
+      <div class="card-body" style="padding:14px;">
+        <div class="table-toolbar" style="margin-bottom:14px;">
+          <div class="search-bar" style="flex:1;min-width:200px;">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-patient" class="form-control" placeholder="Rechercher un patient...">
+          </div>
+          <select id="filtre-statut" class="form-control" style="width:160px;">
+            <option value="">Tous les statuts</option>
+            <option value="en_attente">En attente</option>
+            <option value="appele">Appelé</option>
+            <option value="en_consultation">En consultation</option>
+            <option value="termine">Terminé</option>
+            <option value="annule">Annulé</option>
+          </select>
+        </div>
+
+        <div class="table-wrapper">
+          <table id="patients-table">
+            <thead>
+              <tr>
+                <th>N°</th>
+                <th>Patient</th>
+                <th>Type</th>
+                <th>Médecin</th>
+                <th>Salle</th>
+                <th>Statut</th>
+                <th>Heure</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="patients-tbody">
+              <tr><td colspan="8">
+                <div class="empty-state"><div class="spinner"></div><p>Chargement...</p></div>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /reception-grid -->
+</div><!-- /main-content -->
+
+<!-- MODAL BADGE -->
+<div id="modal-badge" class="modal-backdrop" onclick="if(event.target===this)closeModal('modal-badge')">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-header">
+      <h3>🖨️ Badge du patient</h3>
+      <button class="modal-close" onclick="closeModal('modal-badge')">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+      <div class="badge-preview-wrapper">
+        <div class="patient-badge" id="badge-container">
+          <!-- Rempli dynamiquement -->
+        </div>
+      </div>
+      <div class="badge-actions">
+        <button class="btn btn-success btn-lg" onclick="window.print()">🖨️ Imprimer le badge</button>
+        <button class="btn btn-outline" onclick="closeModal('modal-badge')">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/reception.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+# ============================================================
+# .gitignore — Fichiers à NE PAS pousser sur GitHub
+# ============================================================
+
+# Variables d'environnement locales (contiennent les clés secrètes)
+.env
+.env.local
+.env.*.local
+
+# Vercel
+.vercel
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Éditeurs
+.vscode/settings.json
+*.swp

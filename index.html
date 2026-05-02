@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File d'Attente — CHU Psychiatrique Tanger</title>
+  <meta name="description" content="Système de gestion de file d'attente — Hôpital Universitaire Psychiatrique de Tanger">
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #F0F4F8; }
+
+    .home-wrap { max-width: 900px; width: 100%; padding: 32px 20px; }
+
+    .home-hero {
+      text-align: center;
+      padding: 48px 32px 40px;
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .home-hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #2E7D32, #1565C0);
+    }
+
+    .home-logo {
+      width: 80px; height: 80px;
+      object-fit: contain;
+      margin-bottom: 16px;
+    }
+
+    .home-hero h1 {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .home-hero .sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .home-hero .sub-ar {
+      font-family: 'Cairo', sans-serif;
+      font-size: 16px;
+      color: var(--text-secondary);
+      direction: rtl;
+    }
+
+    .pages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .page-card {
+      background: white;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px 20px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+    }
+
+    .page-card.reception:hover  { background: linear-gradient(135deg, #F0FFF4, #ECFDF5); border-color: #86EFAC; }
+    .page-card.affichage:hover  { background: linear-gradient(135deg, #0F1629, #1a2540); color: white; }
+    .page-card.medecin:hover    { background: linear-gradient(135deg, #EFF6FF, #DBEAFE); border-color: #93C5FD; }
+    .page-card.admin:hover      { background: linear-gradient(135deg, #FFF7ED, #FFEDD5); border-color: #FCA47C; }
+
+    .page-card-icon { font-size: 48px; line-height: 1; }
+    .page-card-title { font-size: 17px; font-weight: 700; }
+    .page-card-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    .page-card.affichage:hover .page-card-desc { color: #94A3B8; }
+
+    .salles-section {
+      margin-top: 32px;
+    }
+
+    .salles-section h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .salles-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .salle-card {
+      text-decoration: none;
+      text-align: center;
+      padding: 16px 10px;
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--border);
+      transition: var(--transition);
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .salle-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+
+    .salle-card.psychiatrie:hover   { border-color: var(--psy-border); background: var(--psy-light); }
+    .salle-card.psychotherapie:hover { border-color: var(--psy2-border); background: var(--psy2-light); }
+
+    .salle-num { font-size: 26px; font-weight: 800; color: var(--text-primary); }
+    .salle-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-top: 4px; }
+    .salle-card.psychiatrie  .salle-label { color: var(--psy-dark); }
+    .salle-card.psychotherapie .salle-label { color: var(--psy2-dark); }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 600px) {
+      .salles-grid { grid-template-columns: repeat(3, 1fr); }
+      .pages-grid  { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="home-wrap">
+    <div class="home-hero">
+      <img src="assets/logo-chu.png" alt="CHU Logo" class="home-logo">
+      <h1>Système de File d'Attente</h1>
+      <p class="sub">Hôpital Universitaire Psychiatrique — Tanger</p>
+      <p class="sub-ar">مستشفى الجامعي للطب النفسي - طنجة</p>
+    </div>
+
+    <div class="pages-grid">
+      <a href="reception.html" class="page-card reception" id="link-reception">
+        <div class="page-card-icon">🏥</div>
+        <div class="page-card-title">Réception</div>
+        <div class="page-card-desc">Enregistrer les patients et imprimer les badges</div>
+      </a>
+
+      <a href="affichage.html" class="page-card affichage" id="link-affichage" target="_blank">
+        <div class="page-card-icon">📺</div>
+        <div class="page-card-title">Écran d'Affichage</div>
+        <div class="page-card-desc">Afficher les numéros appelés (TV)</div>
+      </a>
+
+      <a href="admin.html" class="page-card admin" id="link-admin">
+        <div class="page-card-icon">⚙️</div>
+        <div class="page-card-title">Administration</div>
+        <div class="page-card-desc">Configurer les affectations et voir les stats</div>
+      </a>
+    </div>
+
+    <div class="salles-section">
+      <h2>🚪 Accès direct aux salles</h2>
+      <div class="salles-grid">
+        <a href="salle01.html" class="salle-card psychiatrie" id="link-salle01">
+          <div class="salle-num">1</div>
+          <div class="salle-label">Psychiatrie</div>
+        </a>
+        <a href="salle02.html" class="salle-card psychotherapie" id="link-salle02">
+          <div class="salle-num">2</div>
+          <div class="salle-label">Psychothérapie</div>
+        </a>
+        <a href="salle03.html" class="salle-card psychiatrie" id="link-salle03">
+          <div class="salle-num">3</div>
+          <div class="salle-label">Psychiatrie</div>
+        </a>
+        <a href="salle04.html" class="salle-card psychiatrie" id="link-salle04">
+          <div class="salle-num">4</div>
+          <div class="salle-label">Psychiatrie</div>
+        </a>
+        <a href="salle05.html" class="salle-card psychiatrie" id="link-salle05">
+          <div class="salle-num">5</div>
+          <div class="salle-label">Psychiatrie</div>
+        </a>
+        <a href="salle06.html" class="salle-card psychiatrie" id="link-salle06">
+          <div class="salle-num">6</div>
+          <div class="salle-label">Psychiatrie</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      © CHU Psychiatrique Tanger — Système de File d'Attente v1.0
+    </div>
+  </div>
+</body>
+</html>

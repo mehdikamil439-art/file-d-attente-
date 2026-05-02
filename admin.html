@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration — File d'Attente CHU</title>
+  <link rel="stylesheet" href="css/main.css">
+  <style>
+    .admin-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 24px; padding: 0 32px; background: var(--surface); }
+    .admin-tab {
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: var(--transition);
+    }
+    .admin-tab:hover  { color: var(--text-primary); }
+    .admin-tab.active { color: var(--psy-dark); border-bottom-color: var(--psy-color); }
+
+    .admin-affectations { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:14px; }
+    .danger-zone { border: 1.5px solid #FECACA; border-radius: var(--radius-lg); padding: 20px; background: #FFF5F5; }
+    .danger-zone h3 { color: var(--danger); margin-bottom:8px; font-size:15px; }
+    .danger-zone p  { color: #7F1D1D; font-size:13px; margin-bottom:14px; }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="topbar-brand">
+    <img src="assets/logo-chu.png" alt="CHU">
+    <span>CHU Psychiatrique<small>Administration</small></span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="reception.html" class="nav-link" id="nav-reception">🏥 Réception</a>
+    <a href="affichage.html" class="nav-link" id="nav-affichage" target="_blank">📺 Affichage</a>
+    <a href="admin.html" class="nav-link active" id="nav-admin">⚙️ Admin</a>
+  </nav>
+</header>
+
+<div class="page-header">
+  <h1>⚙️ Administration</h1>
+  <p>Gestion des affectations, statistiques et configuration du système</p>
+</div>
+
+<!-- STATS -->
+<div class="main-content">
+  <div class="stats-grid" style="margin-bottom:24px;">
+    <div class="stat-card">
+      <div class="stat-value" id="admin-total" style="color:var(--text-primary);">—</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="admin-attente" style="color:var(--warning);">—</div>
+      <div class="stat-label">En attente</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="admin-appeles" style="color:var(--psy2-color);">—</div>
+      <div class="stat-label">Appelés</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="admin-termines" style="color:var(--success);">—</div>
+      <div class="stat-label">Terminés</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="admin-annules" style="color:var(--text-muted);">—</div>
+      <div class="stat-label">Annulés</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="admin-psy" style="color:var(--psy-color);">—</div>
+      <div class="stat-label">Psychiatrie</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="admin-psycho" style="color:var(--psy2-color);">—</div>
+      <div class="stat-label">Psychothérapie</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="admin-taux" style="color:var(--text-primary);">—</div>
+      <div class="stat-label">Taux complétion</div>
+    </div>
+  </div>
+</div>
+
+<!-- ONGLETS -->
+<div class="admin-tabs">
+  <button class="admin-tab active" id="tab-affectations" onclick="switchTab('affectations')">📋 Affectations</button>
+  <button class="admin-tab" id="tab-file"         onclick="switchTab('file')">👥 File du jour</button>
+  <button class="admin-tab" id="tab-medecins"     onclick="switchTab('medecins')">👨‍⚕️ Médecins</button>
+  <button class="admin-tab" id="tab-danger"       onclick="switchTab('danger')">⚠️ Actions</button>
+</div>
+
+<div class="main-content" style="padding-top:0;">
+
+  <!-- PANEL AFFECTATIONS -->
+  <div id="panel-affectations" class="admin-panel">
+    <div class="card">
+      <div class="card-header">
+        <h2>📋 Affectation médecins ↔ salles — Aujourd'hui</h2>
+        <button class="btn btn-sm btn-outline" onclick="renderAffecter()">🔄 Actualiser</button>
+      </div>
+      <div class="card-body">
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">
+          Assignez un médecin à chaque salle pour la journée. Les liens directs vers chaque salle sont accessibles ici.
+        </p>
+        <div id="admin-affectations" class="admin-affectations">
+          <div class="empty-state"><div class="spinner"></div><p>Chargement...</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL FILE DU JOUR -->
+  <div id="panel-file" class="admin-panel" style="display:none;">
+    <div class="card">
+      <div class="card-header">
+        <h2>👥 Tous les patients du jour</h2>
+        <button class="btn btn-sm btn-outline" onclick="loadAllPatients().then(()=>{renderStatsGlobales();renderTableauComplet();})">🔄 Actualiser</button>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead><tr>
+            <th>N°</th><th>Patient</th><th>Type</th><th>Médecin</th><th>Salle</th><th>Statut</th><th>Heure</th>
+          </tr></thead>
+          <tbody id="admin-tbody">
+            <tr><td colspan="7"><div class="empty-state"><div class="spinner"></div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL MÉDECINS -->
+  <div id="panel-medecins" class="admin-panel" style="display:none;">
+    <div class="card">
+      <div class="card-header">
+        <h2>👨‍⚕️ Gestion des médecins</h2>
+      </div>
+      <div id="medecins-list" style="max-height:600px;overflow-y:auto;">
+        <div class="empty-state"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL DANGER -->
+  <div id="panel-danger" class="admin-panel" style="display:none;">
+    <div class="danger-zone">
+      <h3>⚠️ Réinitialisation de la file</h3>
+      <p>Annule tous les patients dont le statut est "en attente" pour aujourd'hui. Les patients déjà appelés ou terminés ne sont pas affectés.</p>
+      <button class="btn btn-danger" onclick="reinitialiserFile()">🗑️ Réinitialiser la file d'attente</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salle 1 â€” CHU Psychiatrique</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/salle.css">
+</head>
+<body>
+
+<header class="topbar">
+  <a href="index.html" class="topbar-brand">
+    <img src="assets/logo-chu.png" alt="CHU">
+    <span>Salle 6<small>Consultation Psychiatrique</small></span>
+  </a>
+  <nav class="topbar-nav">
+    <a href="reception.html" class="nav-link">ðŸ¥ RÃ©ception</a>
+    <a href="affichage.html" class="nav-link" target="_blank">ðŸ“º Affichage</a>
+    <a href="index.html" class="nav-link">ðŸ  Accueil</a>
+  </nav>
+</header>
+
+<!-- HERO SALLE -->
+<div class="salle-hero" id="salle-hero">
+  <div class="salle-info">
+    <div class="salle-num-label">Espace de consultation</div>
+    <div class="salle-num">
+      <span id="salle-num-display">Salle 6</span>
+      <span class="salle-type-badge" id="salle-type-label">Consultation Psychiatrique</span>
+    </div>
+  </div>
+  <div class="salle-doctor" id="doctor-box">
+    <div class="doctor-avatar" id="doctor-avatar">ðŸ‘¨â€âš•ï¸</div>
+    <div class="doctor-info">
+      <div class="doctor-name" id="doctor-name">Chargement...</div>
+      <div class="doctor-sub" id="doctor-sub">MÃ©decin du jour</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENU PRINCIPAL -->
+<div class="salle-layout">
+
+  <!-- COLONNE PRINCIPALE -->
+  <div style="display:flex;flex-direction:column;gap:20px;">
+
+    <!-- Patient courant -->
+    <div class="card">
+      <div class="card-header">
+        <h2>ðŸ”” Patient en cours</h2>
+        <span id="current-status-badge" class="badge badge-attente" style="display:none;"></span>
+      </div>
+      <div class="card-body">
+        <!-- Patient appelÃ© -->
+        <div id="current-patient-card" class="current-patient-card" style="display:none;">
+          <div class="current-label">PATIENT APPELÃ‰</div>
+          <div class="current-num" id="current-num">â€”</div>
+          <div class="current-name" id="current-name">â€”</div>
+          <div class="current-time" id="current-time"></div>
+        </div>
+
+        <!-- Aucun patient -->
+        <div id="no-current-patient" class="empty-state">
+          <div class="empty-icon">ðŸ•</div>
+          <p>Aucun patient en cours â€” Cliquez "Appeler le suivant"</p>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="action-buttons" style="margin-top:20px;">
+          <button class="btn-call btn-call-next" id="btn-call-next" onclick="appellerSuivant()">
+            ðŸ“¢ Appeler le suivant
+          </button>
+          <button class="btn-call btn-call-arrived" id="btn-arrived" onclick="patientArrive()" disabled>
+            ðŸ‘¤ Patient prÃ©sent
+          </button>
+          <button class="btn-call btn-call-done" id="btn-call-done" onclick="terminerConsultation()" disabled>
+            âœ… Consultation terminÃ©e
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- File d'attente -->
+    <div class="card">
+      <div class="card-header">
+        <h2>â³ File d'attente</h2>
+        <span class="badge badge-attente" id="queue-count">0</span>
+      </div>
+      <div class="card-body" style="padding:12px;">
+        <div id="queue-list" class="queue-list">
+          <div class="empty-state"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COLONNE LATÃ‰RALE -->
+  <div class="sidebar-panel">
+
+    <!-- Compteurs -->
+    <div class="card">
+      <div class="card-header"><h2>ðŸ“Š Aujourd'hui</h2></div>
+      <div class="card-body">
+        <div class="counters-grid">
+          <div class="counter-box">
+            <div class="counter-value" id="counter-attente">0</div>
+            <div class="counter-label">En attente</div>
+          </div>
+          <div class="counter-box">
+            <div class="counter-value" id="counter-termine" style="color:var(--success);">0</div>
+            <div class="counter-label">TerminÃ©s</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historique -->
+    <div class="card">
+      <div class="card-header">
+        <h2>ðŸ“‹ Historique</h2>
+        <span class="badge badge-termine" id="history-count">0</span>
+      </div>
+      <div class="card-body" style="padding:12px;">
+        <div id="history-list" class="history-list"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>const SALLE_NUMERO = 6;</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/salle.js"></script>
+</body>
+</html>
+
