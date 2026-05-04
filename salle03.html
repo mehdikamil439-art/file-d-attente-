@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Salle 1 â€” CHU Psychiatrique</title>
+  <title>Salle 3 — CHU Psychiatrique</title>
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/salle.css">
 </head>
@@ -15,9 +15,9 @@
     <span>Salle 3<small>Consultation Psychiatrique</small></span>
   </a>
   <nav class="topbar-nav">
-    <a href="reception.html" class="nav-link">ðŸ¥ RÃ©ception</a>
-    <a href="affichage.html" class="nav-link" target="_blank">ðŸ“º Affichage</a>
-    <a href="index.html" class="nav-link">ðŸ  Accueil</a>
+    <a href="reception.html" class="nav-link">🏥 Réception</a>
+    <a href="affichage.html" class="nav-link" target="_blank">📺 Affichage</a>
+    <a href="index.html" class="nav-link">🏠 Accueil</a>
   </nav>
 </header>
 
@@ -31,10 +31,10 @@
     </div>
   </div>
   <div class="salle-doctor" id="doctor-box">
-    <div class="doctor-avatar" id="doctor-avatar">ðŸ‘¨â€âš•ï¸</div>
+    <div class="doctor-avatar" id="doctor-avatar">👨‍⚕️</div>
     <div class="doctor-info">
       <div class="doctor-name" id="doctor-name">Chargement...</div>
-      <div class="doctor-sub" id="doctor-sub">MÃ©decin du jour</div>
+      <div class="doctor-sub" id="doctor-sub">Médecin du jour</div>
     </div>
   </div>
 </div>
@@ -48,34 +48,34 @@
     <!-- Patient courant -->
     <div class="card">
       <div class="card-header">
-        <h2>ðŸ”” Patient en cours</h2>
+        <h2>🔔 Patient en cours</h2>
         <span id="current-status-badge" class="badge badge-attente" style="display:none;"></span>
       </div>
       <div class="card-body">
-        <!-- Patient appelÃ© -->
+        <!-- Patient appelé -->
         <div id="current-patient-card" class="current-patient-card" style="display:none;">
-          <div class="current-label">PATIENT APPELÃ‰</div>
-          <div class="current-num" id="current-num">â€”</div>
-          <div class="current-name" id="current-name">â€”</div>
+          <div class="current-label">PATIENT APPELÉ</div>
+          <div class="current-num" id="current-num">—</div>
+          <div class="current-name" id="current-name">—</div>
           <div class="current-time" id="current-time"></div>
         </div>
 
         <!-- Aucun patient -->
         <div id="no-current-patient" class="empty-state">
-          <div class="empty-icon">ðŸ•</div>
-          <p>Aucun patient en cours â€” Cliquez "Appeler le suivant"</p>
+          <div class="empty-icon">🕐</div>
+          <p>Aucun patient en cours — Cliquez "Appeler le suivant"</p>
         </div>
 
         <!-- Boutons d'action -->
         <div class="action-buttons" style="margin-top:20px;">
           <button class="btn-call btn-call-next" id="btn-call-next" onclick="appellerSuivant()">
-            ðŸ“¢ Appeler le suivant
+            📢 Appeler le suivant
           </button>
           <button class="btn-call btn-call-arrived" id="btn-arrived" onclick="patientArrive()" disabled>
-            ðŸ‘¤ Patient prÃ©sent
+            👤 Patient présent
           </button>
           <button class="btn-call btn-call-done" id="btn-call-done" onclick="terminerConsultation()" disabled>
-            âœ… Consultation terminÃ©e
+            ✅ Consultation terminée
           </button>
         </div>
       </div>
@@ -84,7 +84,7 @@
     <!-- File d'attente -->
     <div class="card">
       <div class="card-header">
-        <h2>â³ File d'attente</h2>
+        <h2>⏳ File d'attente</h2>
         <span class="badge badge-attente" id="queue-count">0</span>
       </div>
       <div class="card-body" style="padding:12px;">
@@ -96,12 +96,12 @@
 
   </div>
 
-  <!-- COLONNE LATÃ‰RALE -->
+  <!-- COLONNE LATÉRALE -->
   <div class="sidebar-panel">
 
     <!-- Compteurs -->
     <div class="card">
-      <div class="card-header"><h2>ðŸ“Š Aujourd'hui</h2></div>
+      <div class="card-header"><h2>📊 Aujourd'hui</h2></div>
       <div class="card-body">
         <div class="counters-grid">
           <div class="counter-box">
@@ -110,7 +110,7 @@
           </div>
           <div class="counter-box">
             <div class="counter-value" id="counter-termine" style="color:var(--success);">0</div>
-            <div class="counter-label">TerminÃ©s</div>
+            <div class="counter-label">Terminés</div>
           </div>
         </div>
       </div>
@@ -119,7 +119,7 @@
     <!-- Historique -->
     <div class="card">
       <div class="card-header">
-        <h2>ðŸ“‹ Historique</h2>
+        <h2>📋 Historique</h2>
         <span class="badge badge-termine" id="history-count">0</span>
       </div>
       <div class="card-body" style="padding:12px;">
@@ -136,4 +136,3 @@
 <script src="js/salle.js"></script>
 </body>
 </html>
-

@@ -1,274 +1,313 @@
 /* ============================================================
-   affichage.css — Écran d'Affichage Public (TV) — 100% Arabe
+   affichage.css — Écran TV style BADGE GST
+   Hôpital Universitaire Psychiatrique — طنجة
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
 
 :root {
-  --tv-bg:        #080B14;
-  --tv-surface:   #0F1629;
-  --tv-surface2:  #141D35;
-  --tv-border:    rgba(255,255,255,.07);
-  --tv-text:      #E2E8F0;
-  --tv-muted:     #64748B;
-  --tv-psy:       #4CAF50;
-  --tv-psy-dark:  #2E7D32;
-  --tv-psy2:      #42A5F5;
-  --tv-psy2-dark: #1565C0;
-  --tv-glow-psy:  rgba(76,175,80,.25);
-  --tv-glow-psy2: rgba(66,165,245,.25);
+  --gst-blue:    #1A4B8C;
+  --gst-blue2:   #1565C0;
+  --gst-light:   #42A5F5;
+  --psy-green:   #2E7D32;
+  --psy-green2:  #43A047;
+  --tv-bg:       #F8FAFC;
+  --tv-surface:  #FFFFFF;
+  --tv-border:   #E2E8F0;
+  --tv-text:     #1E293B;
+  --tv-muted:    #64748B;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
   width: 100%; height: 100%;
-  overflow: hidden;
   background: var(--tv-bg);
   font-family: 'Cairo', sans-serif;
   direction: rtl;
   color: var(--tv-text);
   -webkit-font-smoothing: antialiased;
-}
-
-/* ============================================================
-   HEADER TV
-   ============================================================ */
-.tv-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 40px;
-  background: var(--tv-surface);
-  border-bottom: 1px solid var(--tv-border);
-  flex-shrink: 0;
-  position: relative;
   overflow: hidden;
 }
 
+/* ============================================================
+   LAYOUT PRINCIPAL
+   ============================================================ */
+.tv-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ============================================================
+   HEADER — Logos GST + Nom hôpital + Horloge
+   ============================================================ */
+.tv-header {
+  background: #ffffff;
+  border-bottom: 4px solid var(--gst-blue);
+  padding: 0 24px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  position: relative;
+  gap: 16px;
+  box-shadow: 0 2px 12px rgba(26,75,140,.15);
+}
+
+/* Barre colorée tout en haut */
 .tv-header::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #2E7D32, #1565C0, #2E7D32);
-  background-size: 200% 100%;
-  animation: gradientShift 4s linear infinite;
+  height: 5px;
+  background: linear-gradient(90deg, var(--gst-blue), var(--gst-light), var(--psy-green), var(--gst-blue));
+  background-size: 300% 100%;
+  animation: gradShift 5s linear infinite;
+}
+@keyframes gradShift { to { background-position: -300% 0; } }
+
+/* Logo GST masqué (déjà dans l'image entête) */
+.tv-logo-gst {
+  display: none;
 }
 
-@keyframes gradientShift { to { background-position: -200% 0; } }
+/* Image en-tête officielle */
+.tv-hospital-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.tv-hospital-name {
+.tv-entete-img {
+  height: 130px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Horloge (gauche en RTL) */
+.tv-clock-box {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-}
-
-.tv-hospital-ar {
-  font-size: 20px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.2;
-}
-
-.tv-hospital-fr {
-  font-size: 12px;
-  color: var(--tv-muted);
-  font-weight: 500;
-  letter-spacing: .5px;
-  direction: ltr;
-  font-family: 'Inter', sans-serif;
-}
-
-.tv-clock {
-  text-align: center;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 130px;
 }
 
 .tv-time {
-  font-size: 42px;
+  font-size: 34px;
   font-weight: 900;
-  color: #fff;
+  color: var(--gst-blue);
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -1px;
   direction: ltr;
 }
 
 .tv-date {
-  font-size: 14px;
-  color: var(--tv-muted);
-  text-align: center;
-  margin-top: 2px;
-}
-
-.tv-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.tv-logo img {
-  height: 44px;
-  width: 44px;
-  object-fit: contain;
-  filter: brightness(0) invert(.9);
-}
-
-.tv-logo span {
-  font-size: 10px;
-  color: var(--tv-muted);
-  letter-spacing: 1px;
+  font-size: 15px;
   font-weight: 600;
+  color: #475569;
+  margin-top: 4px;
+  text-align: center;
 }
 
 /* ============================================================
-   BODY TV — GRILLE DES APPELS
+   BODY — Grille des badges
    ============================================================ */
 .tv-body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 28px 32px;
-  gap: 24px;
+  padding: 24px 28px 16px;
+  gap: 16px;
   overflow: hidden;
-  height: calc(100vh - 105px);
 }
 
-/* Titre section */
 .tv-section-title {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--tv-muted);
   text-align: center;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
   text-transform: uppercase;
 }
 
-/* Grille des cartes d'appel */
+/* Grille badges */
 .tv-calls-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
   align-content: start;
   flex: 1;
   overflow: hidden;
 }
 
 /* ============================================================
-   CARTE D'APPEL
+   BADGE CARD — Style identique au badge physique CHU
    ============================================================ */
 .call-card {
-  border-radius: 20px;
-  padding: 32px 28px;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.3);
+  animation: badgeEnter .5s cubic-bezier(.34,1.56,.64,1) both;
   position: relative;
-  overflow: hidden;
-  animation: cardEnter .5s cubic-bezier(.34,1.56,.64,1) both;
-  border: 1px solid var(--tv-border);
+  min-height: 320px;
 }
 
-@keyframes cardEnter {
-  from { opacity: 0; transform: scale(.8) translateY(20px); }
+@keyframes badgeEnter {
+  from { opacity: 0; transform: scale(.7) translateY(30px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.call-card.psychiatrie {
-  background: radial-gradient(ellipse at top, rgba(46,125,50,.3), transparent),
-              var(--tv-surface2);
-  border-color: rgba(76,175,80,.25);
-  box-shadow: 0 0 40px var(--tv-glow-psy), 0 8px 24px rgba(0,0,0,.4);
+/* ── EN-TÊTE COLORÉ DU BADGE ────────────────────── */
+.badge-tv-header {
+  padding: 16px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  flex-shrink: 0;
 }
 
-.call-card.psychotherapie {
-  background: radial-gradient(ellipse at top, rgba(21,101,192,.3), transparent),
-              var(--tv-surface2);
-  border-color: rgba(66,165,245,.25);
-  box-shadow: 0 0 40px var(--tv-glow-psy2), 0 8px 24px rgba(0,0,0,.4);
+.call-card.psychiatrie   .badge-tv-header { background: linear-gradient(160deg, #1B5E20, #2E7D32, #43A047); }
+.call-card.psychotherapie .badge-tv-header { background: linear-gradient(160deg, #0D47A1, #1565C0, #1976D2); }
+
+.badge-tv-logo {
+  width: 36px; height: 36px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.badge-tv-title {
+  font-size: 13px;
+  font-weight: 900;
+  color: rgba(255,255,255,.95);
+  letter-spacing: 2px;
+}
+
+/* Vague entre header et body */
+.badge-tv-wave {
+  display: block;
+  width: 100%;
+  line-height: 0;
+  flex-shrink: 0;
+}
+.badge-tv-wave svg { width: 100%; height: 20px; display: block; }
+
+/* ── CORPS BLANC DU BADGE ───────────────────────── */
+.badge-tv-body {
+  background: #fff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px 14px;
+  gap: 6px;
 }
 
 /* Numéro géant */
-.call-number {
-  font-size: 110px;
+.badge-tv-number {
+  font-size: 80px;
   font-weight: 900;
   line-height: 1;
-  letter-spacing: -4px;
-  animation: numberPulse 2s ease-in-out infinite;
+  letter-spacing: -2px;
+  animation: numPulse 2.5s ease-in-out infinite;
 }
+.call-card.psychiatrie   .badge-tv-number { color: #2E7D32; }
+.call-card.psychotherapie .badge-tv-number { color: #1565C0; }
 
-.call-card.psychiatrie  .call-number { color: #66BB6A; }
-.call-card.psychotherapie .call-number { color: #42A5F5; }
-
-@keyframes numberPulse {
+@keyframes numPulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: .85; }
+  50%       { opacity: .8; }
 }
-
-/* Ligne séparatrice */
-.call-divider {
-  width: 60%;
-  height: 1px;
-  opacity: .2;
-}
-.call-card.psychiatrie  .call-divider { background: #4CAF50; }
-.call-card.psychotherapie .call-divider { background: #42A5F5; }
 
 /* Type arabe */
-.call-type-ar {
-  font-size: 22px;
+.badge-tv-type-ar {
+  font-size: 16px;
   font-weight: 800;
   text-align: center;
   line-height: 1.3;
+  direction: rtl;
 }
-.call-card.psychiatrie  .call-type-ar { color: #A5D6A7; }
-.call-card.psychotherapie .call-type-ar { color: #90CAF9; }
+.call-card.psychiatrie   .badge-tv-type-ar { color: #1B5E20; }
+.call-card.psychotherapie .badge-tv-type-ar { color: #1A4B8C; }
+
+/* Type français */
+.badge-tv-type-fr {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: .3px;
+  font-family: 'Cairo', sans-serif;
+}
+.call-card.psychiatrie   .badge-tv-type-fr { color: #2E7D32; }
+.call-card.psychotherapie .badge-tv-type-fr { color: #1565C0; }
+
+/* Séparateur */
+.badge-tv-sep {
+  width: 50%;
+  height: 1px;
+  margin: 4px auto;
+}
+.call-card.psychiatrie   .badge-tv-sep { background: #DCFCE7; }
+.call-card.psychotherapie .badge-tv-sep { background: #DBEAFE; }
 
 /* Médecin */
-.call-doctor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-
-.call-doctor-label {
-  font-size: 13px;
-  color: var(--tv-muted);
-  font-weight: 500;
-}
-
-.call-doctor-name {
-  font-size: 19px;
+.badge-tv-doctor {
+  font-size: 12px;
   font-weight: 700;
-  color: #fff;
+  color: #374151;
   text-align: center;
+  direction: ltr;
 }
 
-/* Numéro de salle */
-.call-room {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 20px;
-  border-radius: 12px;
-  margin-top: 4px;
+/* Salle */
+.badge-tv-room {
+  font-size: 14px;
+  font-weight: 800;
+  padding: 5px 16px;
+  border-radius: 999px;
+  border: 1.5px solid;
+  direction: rtl;
+  margin-top: 2px;
 }
-.call-card.psychiatrie  .call-room { background: rgba(46,125,50,.2); border: 1px solid rgba(76,175,80,.3); }
-.call-card.psychotherapie .call-room { background: rgba(21,101,192,.2); border: 1px solid rgba(66,165,245,.3); }
+.call-card.psychiatrie   .badge-tv-room { color: #2E7D32; background: #F0FFF4; border-color: #86EFAC; }
+.call-card.psychotherapie .badge-tv-room { color: #1565C0; background: #EFF6FF; border-color: #BFDBFE; }
 
-.call-room-icon { font-size: 20px; }
-
-.call-room-text {
+/* ── PIED DE PAGE COLORÉ ────────────────────────── */
+.badge-tv-footer {
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
 }
 
-.call-room-label { font-size: 11px; color: var(--tv-muted); font-weight: 600; letter-spacing: 1px; }
-.call-room-num   { font-size: 26px; font-weight: 900; color: #fff; line-height: 1; }
+.call-card.psychiatrie   .badge-tv-footer { background: linear-gradient(0deg, #1B5E20, #2E7D32); }
+.call-card.psychotherapie .badge-tv-footer { background: linear-gradient(0deg, #0D47A1, #1565C0); }
+
+.badge-tv-footer-ar {
+  font-size: 9px;
+  color: rgba(255,255,255,.9);
+  text-align: center;
+  direction: rtl;
+}
+.badge-tv-footer-fr {
+  font-size: 8px;
+  color: rgba(255,255,255,.6);
+  text-align: center;
+  letter-spacing: .3px;
+  font-family: 'Cairo', sans-serif;
+}
 
 /* ============================================================
    ÉTAT VIDE
@@ -279,80 +318,77 @@ html, body {
   align-items: center;
   justify-content: center;
   flex: 1;
-  gap: 20px;
-  opacity: .4;
+  gap: 16px;
+  opacity: .35;
 }
 
-.tv-empty-icon { font-size: 80px; }
-.tv-empty-text { font-size: 28px; font-weight: 700; color: var(--tv-muted); }
+.tv-empty-icon { font-size: 64px; }
+.tv-empty-text { font-size: 22px; font-weight: 700; color: var(--tv-muted); }
 
 /* ============================================================
-   TICKER BAS DE PAGE
+   TICKER BAS
    ============================================================ */
 .tv-ticker {
   background: var(--tv-surface);
   border-top: 1px solid var(--tv-border);
-  padding: 12px 32px;
+  padding: 10px 28px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-shrink: 0;
   overflow: hidden;
 }
 
 .tv-ticker-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  color: var(--tv-muted);
+  color: var(--gst-blue);
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .tv-ticker-content {
   display: flex;
-  gap: 20px;
-  animation: ticker 20s linear infinite;
+  gap: 24px;
+  animation: ticker 25s linear infinite;
   white-space: nowrap;
 }
-
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 .tv-ticker-item {
   font-size: 13px;
-  color: #94A3B8;
+  color: var(--tv-text);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 /* ============================================================
-   INDICATEUR LIVE
+   LIVE INDICATOR
    ============================================================ */
 .live-indicator {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--tv-muted);
-  font-weight: 600;
+  gap: 6px;
+  font-size: 11px;
+  color: #2E7D32;
+  font-weight: 700;
+  background: rgba(76,175,80,.12);
+  border: 1px solid rgba(46,125,50,.35);
+  padding: 4px 10px;
+  border-radius: 999px;
 }
 
 .live-dot {
-  width: 8px; height: 8px;
+  width: 7px; height: 7px;
   background: #4CAF50;
   border-radius: 50%;
   animation: livePulse 1.5s ease-in-out infinite;
 }
-
 @keyframes livePulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: .5; transform: scale(.8); }
-}
-
-.tv-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+  50%       { opacity: .4; transform: scale(.7); }
 }

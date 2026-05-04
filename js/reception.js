@@ -7,15 +7,21 @@ let salles   = [];
 let patientsAujourdhui = [];
 let editingPatientId = null;
 
+// Maps des affectations du jour (chargées au démarrage)
+// medecinId  → { salle_id, salle_numero, type, salle_slug }
+// salleId    → { medecin_id, medecin_nom, type }
+let affParMedecin = {};  // { medecinId: {...} }
+let affParSalle   = {};  // { salleId:   {...} }
+
 // ============================================================
 // INITIALISATION
 // ============================================================
 async function initReception() {
   await Promise.all([loadMedecins(), loadSalles()]);
+  await loadAffectationsDuJour(); // ← Charger les maps AVANT setupForm
   await loadPatientsDuJour();
   setupForm();
   setupSearch();
-  loadAffectationsDuJour(); // Pour la configuration du matin
 }
 
 // ============================================================
@@ -50,47 +56,90 @@ async function loadPatientsDuJour() {
 async function loadAffectationsDuJour() {
   const { data, error } = await db
     .from('medecin_salle')
-    .select(`*, medecins(nom, prenom), salles(numero, slug)`)
+    .select(`*, medecins(nom, prenom), salles(numero, slug, type_consultation)`)
     .eq('date_jour', getAujourdhui());
   if (error) return;
+
+  // Construire les maps pour accès instantané
+  affParMedecin = {};
+  affParSalle   = {};
+  (data || []).forEach(a => {
+    if (a.salles && a.medecins) {
+      affParMedecin[a.medecin_id] = {
+        salle_id:     a.salle_id,
+        salle_numero: a.salles.numero,
+        salle_slug:   a.salles.slug,
+        type:         a.salles.type_consultation
+      };
+      affParSalle[a.salle_id] = {
+        medecin_id:  a.medecin_id,
+        medecin_nom: `Dr. ${a.medecins.prenom} ${a.medecins.nom}`,
+        type:        a.salles.type_consultation
+      };
+    }
+  });
+
   renderAffectations(data || []);
 }
 
 // ============================================================
-// FORMULAIRE ENREGISTREMENT PATIENT
+// FORMULAIRE — LOGIQUE AUTO-COMPLÉTION BIDIRECTIONNELLE
 // ============================================================
 function setupForm() {
-  const typeSelect = document.getElementById('type-consultation');
+  const typeSelect   = document.getElementById('type-consultation');
   const medecinSelect = document.getElementById('medecin-select');
-  const salleSelect = document.getElementById('salle-select');
+  const salleSelect  = document.getElementById('salle-select');
 
-  typeSelect.addEventListener('change', () => {
+  // Flag pour éviter les boucles d'événements
+  let _updating = false;
+  const safe = (fn) => { if (_updating) return; _updating = true; fn(); _updating = false; };
+
+  // ── 1. Changer le TYPE ──────────────────────────────────────
+  typeSelect.addEventListener('change', () => safe(() => {
     const type = typeSelect.value;
-    updateSalleOptions(type);
-    updateMedecinOptions(type);
     updateTypeVisual(type);
-  });
+    populateMedecinSelectFiltre(type);  // Médecins affectés à ce type en tête
+    updateSalleOptions(type);           // Salles du bon type
+    // Si médecin déjà sélectionné mais incompatible → réinitialiser
+    const medId = parseInt(medecinSelect.value);
+    if (medId && affParMedecin[medId] && affParMedecin[medId].type !== type) {
+      medecinSelect.value = '';
+      salleSelect.value = '';
+    }
+  }));
 
-  medecinSelect.addEventListener('change', async () => {
+  // ── 2. Changer le MÉDECIN ───────────────────────────────────
+  medecinSelect.addEventListener('change', () => safe(() => {
     const medId = parseInt(medecinSelect.value);
     if (!medId) return;
-    // Vérifier si ce médecin a une affectation salle aujourd'hui
-    const { data } = await db
-      .from('medecin_salle')
-      .select(`*, salles(numero, slug, type_consultation)`)
-      .eq('medecin_id', medId)
-      .eq('date_jour', getAujourdhui())
-      .maybeSingle();
-
-    if (data && data.salles) {
-      salleSelect.value = data.salle_id;
-      // Aussi mettre à jour le type
-      const type = data.salles.type_consultation;
-      typeSelect.value = type;
-      updateTypeVisual(type);
-      updateSalleOptions(type);
+    const aff = affParMedecin[medId];
+    if (aff) {
+      // Affectation trouvée → remplir type et salle automatiquement
+      typeSelect.value = aff.type;
+      updateTypeVisual(aff.type);
+      updateSalleOptions(aff.type);
+      salleSelect.value = aff.salle_id;
     }
-  });
+    // Si pas d'affectation, on laisse l'agent choisir type + salle manuellement
+  }));
+
+  // ── 3. Changer la SALLE ─────────────────────────────────────
+  salleSelect.addEventListener('change', () => safe(() => {
+    const salleId = parseInt(salleSelect.value);
+    if (!salleId) return;
+    const aff = affParSalle[salleId];
+    const salle = salles.find(s => s.id === salleId);
+    if (salle) {
+      // Mettre à jour le type selon la salle
+      typeSelect.value = salle.type_consultation;
+      updateTypeVisual(salle.type_consultation);
+      populateMedecinSelectFiltre(salle.type_consultation);
+    }
+    if (aff) {
+      // Médecin affecté → sélectionner automatiquement
+      medecinSelect.value = aff.medecin_id;
+    }
+  }));
 
   document.getElementById('form-patient').addEventListener('submit', soumettrePatient);
 }
@@ -100,10 +149,10 @@ function updateTypeVisual(type) {
   if (!indicator || !type) return;
   const t = TYPES[type];
   indicator.textContent = t.label_ar;
-  indicator.style.background = t.couleur_light;
-  indicator.style.color = t.couleur;
-  indicator.style.borderColor = t.couleur_border;
-  indicator.style.display = 'block';
+  indicator.style.background   = t.couleur_light;
+  indicator.style.color        = t.couleur;
+  indicator.style.borderColor  = t.couleur_border;
+  indicator.style.display      = 'block';
 }
 
 function updateSalleOptions(type) {
@@ -112,29 +161,66 @@ function updateSalleOptions(type) {
   if (!type) return;
   const allowed = TYPES[type].salles;
   salles.filter(s => allowed.includes(s.numero)).forEach(s => {
+    const aff = affParSalle[s.id];
     const opt = document.createElement('option');
     opt.value = s.id;
-    opt.textContent = `Salle ${s.numero}`;
+    opt.textContent = `Salle ${s.numero}` + (aff ? ` — ${aff.medecin_nom}` : '');
     salleSelect.appendChild(opt);
   });
-  // Si une seule salle disponible (psychothérapie → salle 2), auto-sélectionner
-  if (allowed.length === 1) salleSelect.value = salles.find(s => s.numero === allowed[0])?.id;
+  // Si une seule salle pour ce type → auto-sélectionner
+  if (allowed.length === 1) {
+    const s = salles.find(s => s.numero === allowed[0]);
+    if (s) salleSelect.value = s.id;
+  }
 }
 
-function updateMedecinOptions(type) {
-  populateMedecinSelect(); // Tous les médecins sont disponibles pour les deux types
-}
-
-function populateMedecinSelect() {
+// Popule le select médecin en mettant les médecins affectés (au bon type) EN TÊTE
+function populateMedecinSelectFiltre(type) {
   const sel = document.getElementById('medecin-select');
   if (!sel) return;
   sel.innerHTML = '<option value="">— Choisir un médecin —</option>';
+
+  // Séparer médecins affectés au bon type vs le reste
+  const affectes    = [];
+  const nonAffectes = [];
+
   medecins.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m.id;
-    opt.textContent = `Dr. ${m.prenom} ${m.nom}`;
-    sel.appendChild(opt);
+    const aff = affParMedecin[m.id];
+    if (aff && (!type || aff.type === type)) {
+      affectes.push(m);
+    } else {
+      nonAffectes.push(m);
+    }
   });
+
+  if (affectes.length > 0) {
+    const grp = document.createElement('optgroup');
+    grp.label = '✅ Affectés aujourd\'hui';
+    affectes.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      const aff = affParMedecin[m.id];
+      opt.textContent = `Dr. ${m.prenom} ${m.nom}` + (aff ? ` — Salle ${aff.salle_numero}` : '');
+      grp.appendChild(opt);
+    });
+    sel.appendChild(grp);
+  }
+
+  if (nonAffectes.length > 0) {
+    const grp2 = document.createElement('optgroup');
+    grp2.label = '— Autres médecins';
+    nonAffectes.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      opt.textContent = `Dr. ${m.prenom} ${m.nom}`;
+      grp2.appendChild(opt);
+    });
+    sel.appendChild(grp2);
+  }
+}
+
+function populateMedecinSelect() {
+  populateMedecinSelectFiltre(null); // Tous les médecins sans filtre
 }
 
 // ============================================================
@@ -418,18 +504,17 @@ async function assignerMedecin(salleId, medecinId) {
   await loadAffectationsDuJour();
 }
 
-// ============================================================
-// MODAL HELPERS
-// ============================================================
 function openModal(id) {
   const m = document.getElementById(id);
-  m.classList.add('active');
+  m.style.display = 'flex';
+  requestAnimationFrame(() => m.classList.add('active'));
   document.body.style.overflow = 'hidden';
 }
 
 function closeModal(id) {
   const m = document.getElementById(id);
   m.classList.remove('active');
+  setTimeout(() => { m.style.display = 'none'; }, 200);
   document.body.style.overflow = '';
 }
 

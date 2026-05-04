@@ -48,7 +48,8 @@ const TYPES = {
   psychiatrie: {
     code: 'psychiatrie',
     label_fr: 'Consultation Psychiatrique',
-    label_ar: 'استشارة في الطب النفسي',
+    label_ar:       'استشارة في الطب النفسي',
+    label_ar_court: 'استشارة في الطب',
     couleur: '#2E7D32',
     couleur_gradient: 'linear-gradient(160deg, #1B5E20 0%, #388E3C 60%, #43A047 100%)',
     couleur_light: '#E8F5E9',
@@ -59,7 +60,8 @@ const TYPES = {
   psychotherapie: {
     code: 'psychotherapie',
     label_fr: 'Psychothérapie Individuelle',
-    label_ar: 'حصة علاج نفسي فردية',
+    label_ar:       'حصة علاج نفسي فردية',
+    label_ar_court: 'حصة علاج نفسي فردية',
     couleur: '#1565C0',
     couleur_gradient: 'linear-gradient(160deg, #0D47A1 0%, #1565C0 60%, #1976D2 100%)',
     couleur_light: '#E3F2FD',

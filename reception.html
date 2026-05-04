@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Réception — File d'Attente CHU</title>
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/badge.css">
+  <link rel="stylesheet" href="css/main.css?v=2">
+  <link rel="stylesheet" href="css/badge.css?v=2">
   <style>
     .reception-grid {
       display: grid;
@@ -235,7 +235,7 @@
 </div><!-- /main-content -->
 
 <!-- MODAL BADGE -->
-<div id="modal-badge" class="modal-backdrop" onclick="if(event.target===this)closeModal('modal-badge')">
+<div id="modal-badge" class="modal-backdrop" style="display:none" onclick="if(event.target===this)closeModal('modal-badge')">
   <div class="modal" style="max-width:360px;">
     <div class="modal-header">
       <h3>🖨️ Badge du patient</h3>

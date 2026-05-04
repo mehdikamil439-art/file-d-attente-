@@ -3,41 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>شاشة الاستقبال — مستشفى الجامعي للطب النفسي</title>
-  <meta name="description" content="شاشة عرض أرقام الدور — مستشفى الجامعي للطب النفسي طنجة">
-  <link rel="stylesheet" href="css/affichage.css">
+  <title>شاشة الاستقبال — المستشفى الجامعي محمد السادس للأمراض العقلية والنفسية</title>
+  <link rel="stylesheet" href="css/affichage.css?v=3">
 </head>
 <body>
   <div class="tv-layout">
 
-    <!-- HEADER -->
+    <!-- ══ HEADER ══════════════════════════════════════════ -->
     <header class="tv-header">
-      <!-- Nom hôpital (droite en RTL) -->
-      <div class="tv-hospital-name">
-        <div class="tv-hospital-ar">مستشفى الجامعي للطب النفسي</div>
-        <div class="tv-hospital-fr">Hôpital Universitaire Psychiatrique — Tanger</div>
+
+      <!-- Horloge (à droite, car 1er élément en RTL) -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;min-width:130px;">
+        <div class="tv-clock-box" style="align-items:center;">
+          <div class="tv-time" id="tv-time">00:00:00</div>
+          <div class="tv-date" id="tv-date" style="text-align:center;"></div>
+        </div>
       </div>
 
-      <!-- Horloge (centre) -->
-      <div class="tv-clock">
-        <div class="tv-time" id="tv-time">00:00:00</div>
-        <div class="tv-date" id="tv-date"></div>
+      <!-- Image en-tête officielle (centre) -->
+      <div class="tv-hospital-center">
+        <img src="assets/entete.png" alt="En-tête officiel" class="tv-entete-img">
       </div>
 
-      <!-- Logo + Live (gauche en RTL) -->
-      <div class="tv-logo">
-        <img src="assets/logo-chu.png" alt="CHU">
+      <!-- Live (à gauche, car dernier élément en RTL) -->
+      <div style="display:flex;flex-direction:column;align-items:flex-end;min-width:130px;">
         <div class="live-indicator" id="live-indicator" style="display:none;">
           <div class="live-dot"></div>
           <span>مباشر</span>
         </div>
       </div>
+
     </header>
 
-    <!-- BODY — Grille des appels -->
+    <!-- ══ BODY — Grille des badges ════════════════════════ -->
     <main class="tv-body">
-      <!-- Titre section -->
-      <div class="tv-section-title">📢 الأرقام المستدعاة</div>
+      <div class="tv-section-title">📢 &nbsp; الأرقام المستدعاة &nbsp; 📢</div>
 
       <!-- État vide -->
       <div class="tv-empty" id="tv-empty">
@@ -45,22 +45,21 @@
         <div class="tv-empty-text">في انتظار استدعاء المرضى</div>
       </div>
 
-      <!-- Grille des appels (remplie dynamiquement) -->
+      <!-- Grille (remplie dynamiquement) -->
       <div class="tv-calls-grid" id="calls-grid"></div>
     </main>
 
-    <!-- TICKER BAS -->
+    <!-- ══ TICKER ════════════════════════════════════════ -->
     <footer class="tv-ticker">
       <div class="tv-ticker-label">
-        <span>📢</span>
-        <span>تنبيه</span>
+        <span>📡</span>
+        <span>إشعار</span>
       </div>
       <div class="tv-ticker-content" id="ticker-content"></div>
     </footer>
 
   </div>
 
-  <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase-config.js"></script>
   <script src="js/affichage.js"></script>
