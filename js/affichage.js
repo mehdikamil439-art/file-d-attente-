@@ -178,11 +178,11 @@ function buildCallCard(p) {
       <!-- Corps blanc -->
       <div class="badge-tv-body">
         <div class="badge-tv-number">${numDisplay}</div>
+        <div class="badge-tv-room">${salleAr}</div>
         <div class="badge-tv-type-ar">${t.label_ar}</div>
         <div class="badge-tv-type-fr">${t.label_fr}</div>
         <div class="badge-tv-sep"></div>
         <div class="badge-tv-doctor">${medNom}</div>
-        <div class="badge-tv-room">🚪 ${salleAr}</div>
       </div>
 
       <!-- Pied de page coloré -->
