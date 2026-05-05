@@ -59,23 +59,15 @@
 <body>
 
 <!-- TOPBAR -->
-<header class="topbar">
-  <a href="index.html" class="topbar-brand">
-    <img src="assets/logo-chu.png" alt="CHU">
-    <span>CHU Psychiatrique<small>Hôpital Universitaire — Tanger</small></span>
+<header class="topbar" style="justify-content: center; position: relative; height: 120px;">
+  <a href="index.html" class="topbar-brand" style="margin: 0 auto;">
+    <img src="assets/entete.png" alt="En-tête GST" style="height: 100px; width: auto; object-fit: contain;">
   </a>
-  <nav class="topbar-nav">
+  <nav class="topbar-nav" style="position: absolute; right: 24px; top: 50%; transform: translateY(-50%);">
+    <!-- Juste la tâche de réception, pas de liens externes -->
     <a href="reception.html" class="nav-link active" id="nav-reception">🏥 Réception</a>
-    <a href="affichage.html" class="nav-link" id="nav-affichage" target="_blank">📺 Affichage</a>
-    <a href="admin.html" class="nav-link" id="nav-admin">⚙️ Admin</a>
   </nav>
 </header>
-
-<!-- PAGE HEADER -->
-<div class="page-header">
-  <h1>🏥 Réception</h1>
-  <p>Enregistrer les patients et imprimer les badges de passage</p>
-</div>
 
 <!-- STATS -->
 <div class="main-content">
@@ -238,7 +230,7 @@
 <div id="modal-badge" class="modal-backdrop" style="display:none" onclick="if(event.target===this)closeModal('modal-badge')">
   <div class="modal" style="max-width:360px;">
     <div class="modal-header">
-      <h3>🖨️ Badge du patient</h3>
+      <h3>👁️ Aperçu du badge</h3>
       <button class="modal-close" onclick="closeModal('modal-badge')">✕</button>
     </div>
     <div class="modal-body" style="display:flex;flex-direction:column;align-items:center;gap:20px;">
@@ -248,8 +240,7 @@
         </div>
       </div>
       <div class="badge-actions">
-        <button class="btn btn-success btn-lg" onclick="window.print()">🖨️ Imprimer le badge</button>
-        <button class="btn btn-outline" onclick="closeModal('modal-badge')">Fermer</button>
+        <button class="btn btn-outline" onclick="closeModal('modal-badge')" style="width:100%;">Fermer</button>
       </div>
     </div>
   </div>

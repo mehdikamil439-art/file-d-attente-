@@ -9,46 +9,47 @@
    DESIGN TOKENS
    ============================================================ */
 :root {
-  --psy-color:      #2E7D32;
-  --psy-dark:       #1B5E20;
-  --psy-light:      #E8F5E9;
-  --psy-border:     #81C784;
-  --psy-grad:       linear-gradient(160deg, #1B5E20 0%, #388E3C 60%, #43A047 100%);
+  --psy-color:      #10B981; /* Emerald 500 */
+  --psy-dark:       #059669; /* Emerald 600 */
+  --psy-light:      #D1FAE5; /* Emerald 100 */
+  --psy-border:     #A7F3D0; /* Emerald 200 */
+  --psy-grad:       linear-gradient(135deg, #10B981 0%, #059669 100%);
 
-  --psy2-color:     #1565C0;
-  --psy2-dark:      #0D47A1;
-  --psy2-light:     #E3F2FD;
-  --psy2-border:    #64B5F6;
-  --psy2-grad:      linear-gradient(160deg, #0D47A1 0%, #1565C0 60%, #1976D2 100%);
+  --psy2-color:     #3B82F6; /* Blue 500 */
+  --psy2-dark:      #2563EB; /* Blue 600 */
+  --psy2-light:     #DBEAFE; /* Blue 100 */
+  --psy2-border:    #BFDBFE; /* Blue 200 */
+  --psy2-grad:      linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
 
-  --bg:             #F0F4F8;
+  --bg:             #F8FAFC; /* Slate 50 */
   --surface:        #FFFFFF;
-  --surface-2:      #F8FAFC;
-  --border:         #E2E8F0;
-  --text-primary:   #1A202C;
-  --text-secondary: #4A5568;
-  --text-muted:     #718096;
+  --surface-2:      #F1F5F9; /* Slate 100 */
+  --border:         #E2E8F0; /* Slate 200 */
+  --text-primary:   #0F172A; /* Slate 900 */
+  --text-secondary: #475569; /* Slate 600 */
+  --text-muted:     #94A3B8; /* Slate 400 */
 
-  --success:        #2E7D32;
-  --warning:        #F57F17;
-  --danger:         #C62828;
-  --info:           #0277BD;
+  --success:        #10B981;
+  --warning:        #F59E0B;
+  --danger:         #EF4444;
+  --info:           #3B82F6;
 
-  --radius-sm:      6px;
-  --radius:         10px;
-  --radius-lg:      16px;
-  --radius-xl:      24px;
+  --radius-sm:      8px;
+  --radius:         12px;
+  --radius-lg:      20px;
+  --radius-xl:      28px;
 
-  --shadow-sm:      0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
-  --shadow:         0 4px 12px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
-  --shadow-lg:      0 10px 30px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.08);
-  --shadow-xl:      0 20px 50px rgba(0,0,0,.16);
+  /* Ombres ultra-douces type "Calm Design" */
+  --shadow-sm:      0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow:         0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg:      0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-xl:      0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
 
   --font-fr:        'Inter', system-ui, sans-serif;
   --font-ar:        'Cairo', 'Inter', sans-serif;
 
-  --transition:     all .2s cubic-bezier(.4,0,.2,1);
-  --transition-slow: all .4s cubic-bezier(.4,0,.2,1);
+  --transition:     all .25s cubic-bezier(.4,0,.2,1);
+  --transition-slow: all .5s cubic-bezier(.4,0,.2,1);
 }
 
 /* ============================================================
@@ -92,7 +93,7 @@ body {
   color: var(--text-primary);
 }
 
-.topbar-brand img { height: 36px; width: 36px; object-fit: contain; }
+.topbar-brand img { height: 48px; width: 48px; object-fit: contain; }
 
 .topbar-brand span {
   font-weight: 700;
@@ -162,27 +163,30 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
+  transition: var(--transition);
 }
+.card:hover { box-shadow: var(--shadow); }
 
 .card-header {
-  padding: 16px 20px;
+  padding: 20px 24px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  background: rgba(255, 255, 255, 0.5); /* Subtle distinction */
 }
 
 .card-header h2 {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 700;
   color: var(--text-primary);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.card-body { padding: 20px; }
+.card-body { padding: 24px; }
 
 /* ============================================================
    BOUTONS
@@ -231,67 +235,69 @@ body {
 /* ============================================================
    FORMULAIRES
    ============================================================ */
-.form-group { margin-bottom: 16px; }
+.form-group { margin-bottom: 20px; }
 
 .form-label {
   display: block;
   font-size: 13px;
   font-weight: 600;
   color: var(--text-secondary);
-  margin-bottom: 6px;
-  text-transform: uppercase;
-  letter-spacing: .4px;
+  margin-bottom: 8px;
+  letter-spacing: .2px;
 }
 
 .form-control {
   width: 100%;
-  padding: 10px 14px;
-  border: 1.5px solid var(--border);
+  padding: 12px 16px;
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   font-family: var(--font-fr);
   font-size: 14px;
   color: var(--text-primary);
-  background: var(--surface);
+  background: var(--surface-2); /* Slightly gray for better input visibility */
   transition: var(--transition);
   outline: none;
   appearance: none;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.02);
 }
+.form-control:hover { border-color: #CBD5E1; }
 .form-control:focus {
+  background: var(--surface);
   border-color: var(--psy2-color);
-  box-shadow: 0 0 0 3px rgba(21,101,192,.12);
+  box-shadow: 0 0 0 4px var(--psy2-light);
 }
 .form-control::placeholder { color: var(--text-muted); }
 
-select.form-control { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23718096' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; cursor: pointer; }
+select.form-control { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2364748B' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px; cursor: pointer; }
 
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
 
 /* ============================================================
    TABLEAUX
    ============================================================ */
-.table-wrapper { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+.table-wrapper { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); background: var(--surface); }
 
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 
 thead tr { background: var(--surface-2); }
 thead th {
-  padding: 12px 16px;
+  padding: 14px 20px;
   text-align: left;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: .6px;
+  letter-spacing: .5px;
   white-space: nowrap;
   border-bottom: 1px solid var(--border);
 }
 
-tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background .2s; }
 tbody tr:last-child { border-bottom: none; }
-tbody tr:hover { background: var(--surface-2); }
+tbody tr:hover { background: #F8FAFC; }
 
-tbody td { padding: 12px 16px; color: var(--text-primary); vertical-align: middle; }
+tbody td { padding: 16px 20px; color: var(--text-primary); vertical-align: middle; }
 
 /* ============================================================
    BADGES DE STATUT
@@ -307,11 +313,11 @@ tbody td { padding: 12px 16px; color: var(--text-primary); vertical-align: middl
   white-space: nowrap;
 }
 
-.badge-attente      { background: #FFF8E1; color: #E65100; border: 1px solid #FFE082; }
-.badge-appele       { background: #E3F2FD; color: #0D47A1; border: 1px solid #90CAF9; }
-.badge-consultation { background: #E8F5E9; color: #1B5E20; border: 1px solid #A5D6A7; }
-.badge-termine      { background: #F3F4F6; color: #374151; border: 1px solid #D1D5DB; }
-.badge-annule       { background: #FFEBEE; color: #B71C1C; border: 1px solid #EF9A9A; }
+.badge-attente      { background: #FEF3C7; color: #D97706; border: 1px solid #FDE68A; }
+.badge-appele       { background: #DBEAFE; color: #2563EB; border: 1px solid #BFDBFE; }
+.badge-consultation { background: #D1FAE5; color: #059669; border: 1px solid #A7F3D0; }
+.badge-termine      { background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }
+.badge-annule       { background: #FEE2E2; color: #DC2626; border: 1px solid #FECACA; }
 
 .type-pill {
   display: inline-flex;

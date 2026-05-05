@@ -322,8 +322,8 @@ function afficherBadgeModal(patient) {
     <div class="badge-clip"></div>
     <div class="badge-body">
       <div class="badge-top">
-        <img src="assets/logo-chu.png" alt="CHU" class="badge-logo-img">
-        <div class="badge-chu-title">CHU</div>
+        <img src="assets/logoGST.png" alt="GST" class="badge-logo-img">
+        <div class="badge-chu-title">GST</div>
       </div>
       <div class="badge-wave">
         <svg viewBox="0 0 240 30" preserveAspectRatio="none">
@@ -338,8 +338,8 @@ function afficherBadgeModal(patient) {
         <div class="badge-medecin">${medNom}${salleNum ? ' · Salle ' + salleNum : ''}</div>
       </div>
       <div class="badge-footer">
-        <div class="badge-footer-ar">مستشفى الجامعي للطب النفسي - طنجة</div>
-        <div class="badge-footer-fr">Hôpital Psychiatrique Universitaire - Tanger</div>
+        <div class="badge-footer-ar">المستشفى الجامعي محمد السادس للأمراض العقلية والنفسية - طنجة</div>
+        <div class="badge-footer-fr">Hôpital Universitaire de Psychiatrie Mohammed VI  -Tanger-</div>
       </div>
     </div>
   `;
@@ -394,7 +394,7 @@ function renderPatientsTable(patients) {
       <td style="font-size:12px;color:var(--text-muted);">${formatHeure(p.created_at)}</td>
       <td>
         <div style="display:flex;gap:6px;">
-          ${canPrint  ? `<button class="btn btn-sm btn-outline" onclick="rePrintBadge(${p.id})" title="Réimprimer">🖨️</button>` : ''}
+          ${canPrint  ? `<button class="btn btn-sm btn-outline" onclick="viewBadge(${p.id})" title="Afficher le badge">👁️</button>` : ''}
           ${canEdit   ? `<button class="btn btn-sm btn-outline" onclick="startEdit(${p.id})" title="Modifier">✏️</button>` : ''}
           ${canCancel ? `<button class="btn btn-sm btn-danger"  onclick="annulerPatient(${p.id})" title="Annuler">✕</button>` : ''}
         </div>
@@ -435,7 +435,7 @@ function startEdit(id) {
   document.getElementById('form-patient').scrollIntoView({ behavior: 'smooth' });
 }
 
-async function rePrintBadge(id) {
+async function viewBadge(id) {
   const p = patientsAujourdhui.find(x => x.id === id);
   if (p) afficherBadgeModal(p);
 }
@@ -482,7 +482,6 @@ function renderAffectations(affectations) {
             <option value="">— Non assigné —</option>
             ${medecins.map(m => `<option value="${m.id}" ${aff && aff.medecin_id === m.id ? 'selected' : ''}>Dr. ${m.prenom} ${m.nom}</option>`).join('')}
           </select>
-          ${aff ? `<a href="${salle.slug}.html" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;color:${t.couleur};text-decoration:none;font-weight:600;">🔗 Ouvrir salle ${salle.numero}</a>` : ''}
         </div>
       </div>`;
   }).join('');

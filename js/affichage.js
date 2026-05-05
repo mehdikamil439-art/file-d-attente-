@@ -106,7 +106,9 @@ function subscribeRealtime() {
           appelsActifs[p.id] = data;
           renderGrid();
           if (isNew && p.statut === 'appele') {
-            playBeep();
+            const numero = data.numero_passage;
+            const salle = data.salles ? data.salles.numero : 1;
+            playVoiceAnnouncement(numero, salle);
             highlightCard(p.id);
           }
         }
@@ -188,7 +190,7 @@ function buildCallCard(p) {
       <!-- Pied de page coloré -->
       <div class="badge-tv-footer">
         <div class="badge-tv-footer-ar">المستشفى الجامعي محمد السادس للأمراض العقلية والنفسية - طنجة</div>
-        <div class="badge-tv-footer-fr">Hôpital Universitaire Mohammed VI — Tanger</div>
+        <div class="badge-tv-footer-fr">Hôpital Universitaire de Psychiatrie Mohammed VI  -Tanger-</div>
       </div>
 
     </div>`;
@@ -208,39 +210,34 @@ function highlightCard(patientId) {
   }, 100);
 }
 
-function playBeep() {
+function playVoiceAnnouncement(numero, salle) {
   try {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume(); // Gérer les politiques de lecture automatique
+    if (!('speechSynthesis' in window)) return;
+    
+    // Le texte de l'annonce en arabe
+    const texte = `المرجو من الرقم ${numero} التوجه إلى القاعة رقم ${salle}`;
 
-    // Séquence "Ten Ten Ten" (Do, Mi, Sol)
-    const notes = [
-      { freq: 523.25, delay: 0 },    // Note 1
-      { freq: 659.25, delay: 0.35 }, // Note 2
-      { freq: 783.99, delay: 0.7 }   // Note 3
-    ];
+    // Fonction pour dire le texte
+    const parler = (onEndCallback) => {
+      const utterance = new SpeechSynthesisUtterance(texte);
+      utterance.lang = 'ar-SA'; // Arabe
+      utterance.rate = 0.8; // Vitesse légèrement ralentie pour la clarté
+      utterance.pitch = 1;
+      
+      if (onEndCallback) utterance.onend = onEndCallback;
+      
+      window.speechSynthesis.speak(utterance);
+    };
 
-    notes.forEach(note => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      
-      osc.type = 'sine'; // Son doux style cloche/hôpital
-      
-      const startTime = audioCtx.currentTime + note.delay;
-      osc.frequency.setValueAtTime(note.freq, startTime);
-      
-      // Enveloppe sonore (Attaque rapide, chute douce)
-      gain.gain.setValueAtTime(0, startTime);
-      gain.gain.linearRampToValueAtTime(0.6, startTime + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.8);
-      
-      osc.start(startTime);
-      osc.stop(startTime + 0.8);
+    // Annuler toute annonce précédente en cours
+    window.speechSynthesis.cancel();
+
+    // Jouer l'annonce une 1ère fois, puis une 2ème fois après une seconde
+    parler(() => {
+      setTimeout(() => parler(), 1000);
     });
-  } catch(e) { console.error("Erreur audio :", e); }
+
+  } catch(e) { console.error("Erreur vocale :", e); }
 }
 
 // ============================================================
