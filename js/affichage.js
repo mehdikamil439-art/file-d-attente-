@@ -259,9 +259,30 @@ function buildTicker() {
 }
 
 // ============================================================
-// START
+// START & AUDIO UNLOCK
 // ============================================================
 document.addEventListener('DOMContentLoaded', async () => {
   await dbReady;
-  initAffichage();
+  
+  const overlay = document.getElementById('audio-unlock-overlay');
+  
+  if (overlay) {
+    overlay.addEventListener('click', () => {
+      // 1. Cacher l'overlay
+      overlay.style.display = 'none';
+      
+      // 2. Débloquer la synthèse vocale avec un son vide
+      if ('speechSynthesis' in window) {
+        const unlockUtterance = new SpeechSynthesisUtterance('');
+        unlockUtterance.volume = 0; // silencieux
+        window.speechSynthesis.speak(unlockUtterance);
+      }
+      
+      // 3. Lancer l'application
+      initAffichage();
+    });
+  } else {
+    // Fallback au cas où l'overlay n'est pas là
+    initAffichage();
+  }
 });
