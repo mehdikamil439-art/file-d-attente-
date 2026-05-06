@@ -210,6 +210,52 @@ function highlightCard(patientId) {
   }, 100);
 }
 
+// ============================================================
+// TONALITE "TEN TEN TEN" (3 bips avant l'annonce)
+// ============================================================
+function playChime() {
+  return new Promise(resolve => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) { resolve(); return; }
+
+      const ctx = new AudioContext();
+      const totalBips = 3;
+      const bipDuration = 0.18;   // durée de chaque bip (secondes)
+      const bipInterval = 0.38;   // intervalle entre les bips
+      const freq = 880;           // fréquence (la) — ton clair type "ding"
+
+      for (let i = 0; i < totalBips; i++) {
+        const osc  = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+        const startT = ctx.currentTime + i * bipInterval;
+        const stopT  = startT + bipDuration;
+
+        gain.gain.setValueAtTime(0, startT);
+        gain.gain.linearRampToValueAtTime(0.7, startT + 0.01);
+        gain.gain.linearRampToValueAtTime(0, stopT);
+
+        osc.start(startT);
+        osc.stop(stopT);
+      }
+
+      // Résoudre après la fin du dernier bip
+      setTimeout(resolve, (totalBips * bipInterval) * 1000 + 100);
+
+    } catch(e) {
+      console.warn('Chime error:', e);
+      resolve(); // continuer même si erreur
+    }
+  });
+}
+
 function playVoiceAnnouncement(numero, salle) {
   try {
     if (!('speechSynthesis' in window)) return;
@@ -245,10 +291,14 @@ function playVoiceAnnouncement(numero, salle) {
     window.speechSynthesis.resume();
     window.speechSynthesis.cancel(); // Vider la file d'attente
 
-    // Jouer 2 fois avec un petit délai
+    // Jouer le "ten ten ten" puis l'annonce 2 fois
     setTimeout(async () => {
-      await parler();
-      setTimeout(parler, 1000);
+      await playChime();       // 🔔 Bip bip bip
+      await parler();          // 1ère annonce
+      setTimeout(async () => {
+        await playChime();     // 🔔 Bip bip bip
+        parler();              // 2ème annonce
+      }, 800);
     }, 100);
 
   } catch(e) { console.error("Erreur vocale :", e); }
