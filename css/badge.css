@@ -33,6 +33,7 @@
   overflow: hidden;
   font-family: 'Cairo', 'Inter', sans-serif;
   page-break-inside: avoid;
+  page-break-after: always; /* Force le passage à la page suivante (Verso) */
 }
 
 /* Clip porte-badge en haut */
@@ -204,6 +205,32 @@
   text-align: center;
 }
 
+
+/* ============================================================
+   VERSO (DOS) DU BADGE
+   ============================================================ */
+.patient-badge.badge-back {
+  page-break-after: auto;
+  justify-content: center;
+}
+
+.badge-back .badge-body {
+  justify-content: center;
+  gap: 20px;
+}
+
+.badge-back-logo {
+  width: 90px;
+  filter: brightness(0) invert(1);
+}
+
+.badge-back-text {
+  color: white;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 5px;
+}
+
 /* ============================================================
    IMPRESSION @media print
    ============================================================ */
@@ -222,27 +249,30 @@
   }
 
   .patient-badge {
-    position: fixed !important;
-    top: 20mm;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 54mm;
-    min-height: 85mm;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 54mm !important;
+    height: 86mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important; /* L'imprimante gère les bords arrondis physiquement */
     box-shadow: none !important;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
 
-  .patient-badge .badge-number { font-size: 28mm !important; }
-  .patient-badge .badge-type-ar { font-size: 5.5mm !important; }
-  .patient-badge .badge-type-fr { font-size: 4.5mm !important; }
-  .patient-badge .badge-footer-ar { font-size: 3.5mm !important; }
-  .patient-badge .badge-footer-fr { font-size: 3mm !important; }
-  .patient-badge .badge-chu-title { font-size: 7mm !important; }
-  .patient-badge .badge-logo-img { width: 16mm !important; height: 16mm !important; }
+  /* Ajustements des textes pour le format carte */
+  .patient-badge .badge-number { font-size: 24mm !important; margin-top: 2mm !important; }
+  .patient-badge .badge-type-ar { font-size: 4.8mm !important; }
+  .patient-badge .badge-type-fr { font-size: 3.8mm !important; }
+  .patient-badge .badge-footer-ar { font-size: 3mm !important; }
+  .patient-badge .badge-footer-fr { font-size: 2.5mm !important; }
+  .patient-badge .badge-chu-title { font-size: 6mm !important; }
+  .patient-badge .badge-logo-img { width: 12mm !important; height: 12mm !important; }
 
   @page {
-    size: 54mm 90mm;
+    size: 54mm 86mm;
     margin: 0;
   }
 }

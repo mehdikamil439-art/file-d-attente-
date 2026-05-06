@@ -355,31 +355,96 @@ function printBadge() {
   const badgeEl = document.getElementById('badge-container');
   if (!badgeEl) return;
 
-  const printWindow = window.open('', '_blank', 'width=400,height=600');
-  printWindow.document.write(`
-    <!DOCTYPE html>
-    <html lang="fr">
-    <head>
-      <meta charset="UTF-8">
-      <title>Badge Patient</title>
-      <link rel="stylesheet" href="css/main.css">
-      <style>
-        body { margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f0f0f0; }
-        @media print {
-          body { background: white; padding: 0; }
-          @page { size: 85mm 140mm; margin: 5mm; }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="patient-badge">
-        ${badgeEl.innerHTML}
-      </div>
-      <script>window.onload = () => { window.print(); window.close(); }<\/script>
-    </body>
-    </html>
-  `);
-  printWindow.document.close();
+  // ── Extraire les données depuis le DOM du badge ─────────────
+  const badgeWrapper = document.querySelector('.patient-badge');
+  const type   = badgeWrapper?.classList.contains('psychiatrie') ? 'psychiatrie' : 'psychotherapie';
+  const numero = badgeEl.querySelector('.badge-number')?.textContent?.trim()  || '—';
+  const typeAr = badgeEl.querySelector('.badge-type-ar')?.textContent?.trim() || '';
+  const typeFr = badgeEl.querySelector('.badge-type-fr')?.textContent?.trim() || '';
+
+  // ── Palette de couleurs ─────────────────────────────────────
+  const isPsy    = type === 'psychiatrie';
+  const couleur  = isPsy ? '#2E7D32' : '#1565C0';
+  const gradient = isPsy
+    ? 'linear-gradient(160deg,#1B5E20 0%,#2E7D32 50%,#43A047 100%)'
+    : 'linear-gradient(160deg,#0D47A1 0%,#1565C0 50%,#1E88E5 100%)';
+  const footerBg = isPsy
+    ? 'linear-gradient(0deg,#1B5E20,#2E7D32)'
+    : 'linear-gradient(0deg,#0D47A1,#1565C0)';
+
+  // ── URL absolue du logo ─────────────────────────────────────
+  const logoUrl = window.location.origin + '/assets/logoGST.png';
+
+  // ── Ouvrir et écrire la fenêtre d'impression ────────────────
+  const pw = window.open('', '_blank', 'width=600,height=800');
+  pw.document.write(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Badge Patient</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+@page{size:54mm 86mm;margin:0}
+body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
+.card-page{width:54mm;height:86mm;overflow:hidden;page-break-after:always;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.card-page:last-child{page-break-after:auto}
+.recto{display:flex;flex-direction:column;background:${gradient}}
+.clip{width:36px;height:16px;background:#CBD5E0;border-radius:3px 3px 0 0;margin:0 auto;flex-shrink:0}
+.r-top{display:flex;flex-direction:column;align-items:center;padding:7px 8px 5px;flex-shrink:0}
+.r-logo{width:28px;height:28px;object-fit:contain;filter:brightness(0) invert(1);margin-bottom:3px}
+.r-title{font-size:13px;font-weight:900;color:rgba(255,255,255,.95);letter-spacing:3px}
+.r-wave{width:100%;line-height:0;flex-shrink:0}
+.r-wave svg{width:100%;height:14px;display:block}
+.r-body{background:white;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 8px 6px}
+.r-num{font-size:40px;font-weight:900;line-height:1;color:${couleur};margin-bottom:5px}
+.r-type-ar{font-size:9.5px;font-weight:700;color:${couleur};text-align:center;direction:rtl;line-height:1.5}
+.r-type-fr{font-size:8.5px;font-weight:600;color:${couleur};text-align:center;margin-top:2px}
+.r-footer{background:${footerBg};padding:5px 8px 7px;display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0}
+.r-footer-ar{font-size:6px;color:rgba(255,255,255,.9);direction:rtl;text-align:center;line-height:1.5}
+.r-footer-fr{font-size:5.5px;color:rgba(255,255,255,.75);text-align:center}
+.verso{background:${gradient};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.v-logo{width:72px;filter:brightness(0) invert(1)}
+.v-title{font-size:20px;font-weight:900;color:white;letter-spacing:6px}
+.v-sub{font-size:6.5px;color:rgba(255,255,255,.75);text-align:center;padding:0 12px;direction:rtl;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="card-page recto">
+  <div class="clip"></div>
+  <div class="r-top">
+    <img src="${logoUrl}" class="r-logo" alt="GST">
+    <div class="r-title">GST</div>
+  </div>
+  <div class="r-wave">
+    <svg viewBox="0 0 240 14" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,14 Q60,0 120,7 Q180,14 240,3 L240,14 Z" fill="white"/>
+    </svg>
+  </div>
+  <div class="r-body">
+    <div class="r-num">${numero}</div>
+    <div class="r-type-ar">${typeAr}</div>
+    <div class="r-type-fr">${typeFr}</div>
+  </div>
+  <div class="r-footer">
+    <div class="r-footer-ar">المستشفى الجامعي محمد السادس للأمراض العقلية والنفسية - طنجة</div>
+    <div class="r-footer-fr">Hôpital Universitaire de Psychiatrie Mohammed VI -Tanger-</div>
+  </div>
+</div>
+<div class="card-page verso">
+  <img src="${logoUrl}" class="v-logo" alt="GST">
+  <div class="v-title">GST</div>
+  <div class="v-sub">المجموعة الصحية الترابية<br>Groupe de Santé Territorial</div>
+</div>
+<script>
+  if(document.fonts&&document.fonts.ready){
+    document.fonts.ready.then(function(){setTimeout(function(){window.print();window.close();},500);});
+  }else{setTimeout(function(){window.print();window.close();},1500);}
+<\/script>
+</body>
+</html>`);
+  pw.document.close();
 }
 
 // ============================================================
