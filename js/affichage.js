@@ -218,24 +218,38 @@ function playVoiceAnnouncement(numero, salle) {
     const texte = `المرجو من الرقم ${numero} التوجه إلى القاعة رقم ${salle}`;
 
     // Fonction pour dire le texte
-    const parler = (onEndCallback) => {
-      const utterance = new SpeechSynthesisUtterance(texte);
-      utterance.lang = 'ar-SA'; // Arabe
-      utterance.rate = 0.8; // Vitesse légèrement ralentie pour la clarté
-      utterance.pitch = 1;
-      
-      if (onEndCallback) utterance.onend = onEndCallback;
-      
-      window.speechSynthesis.speak(utterance);
+    const parler = () => {
+      return new Promise(resolve => {
+        const utterance = new SpeechSynthesisUtterance(texte);
+        utterance.rate = 0.8;
+        utterance.pitch = 1;
+        
+        // Chercher une voix arabe si disponible, sinon laisser par défaut
+        const voices = window.speechSynthesis.getVoices();
+        const arabicVoice = voices.find(v => v.lang.startsWith('ar'));
+        if (arabicVoice) {
+          utterance.voice = arabicVoice;
+          utterance.lang = arabicVoice.lang;
+        } else {
+          utterance.lang = 'ar-SA'; // fallback
+        }
+        
+        utterance.onend = resolve;
+        utterance.onerror = resolve; // Continuer même en cas d'erreur
+        
+        window.speechSynthesis.speak(utterance);
+      });
     };
 
-    // Annuler toute annonce précédente en cours
-    window.speechSynthesis.cancel();
+    // Assurer que le moteur est prêt
+    window.speechSynthesis.resume();
+    window.speechSynthesis.cancel(); // Vider la file d'attente
 
-    // Jouer l'annonce une 1ère fois, puis une 2ème fois après une seconde
-    parler(() => {
-      setTimeout(() => parler(), 1000);
-    });
+    // Jouer 2 fois avec un petit délai
+    setTimeout(async () => {
+      await parler();
+      setTimeout(parler, 1000);
+    }, 100);
 
   } catch(e) { console.error("Erreur vocale :", e); }
 }
@@ -271,9 +285,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       // 1. Cacher l'overlay
       overlay.style.display = 'none';
       
-      // 2. Débloquer la synthèse vocale avec un son vide
+      // 2. Débloquer la synthèse vocale avec un petit test
       if ('speechSynthesis' in window) {
-        const unlockUtterance = new SpeechSynthesisUtterance('');
+        window.speechSynthesis.resume();
+        const unlockUtterance = new SpeechSynthesisUtterance('Test système');
         unlockUtterance.volume = 0; // silencieux
         window.speechSynthesis.speak(unlockUtterance);
       }

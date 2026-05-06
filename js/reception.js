@@ -334,8 +334,6 @@ function afficherBadgeModal(patient) {
         <div class="badge-number">${numDisplay}</div>
         <div class="badge-type-ar">${t.label_ar}</div>
         <div class="badge-type-fr">${t.label_fr}</div>
-        <div class="badge-sep"></div>
-        <div class="badge-medecin">${medNom}${salleNum ? ' · Salle ' + salleNum : ''}</div>
       </div>
       <div class="badge-footer">
         <div class="badge-footer-ar">المستشفى الجامعي محمد السادس للأمراض العقلية والنفسية - طنجة</div>
@@ -348,6 +346,40 @@ function afficherBadgeModal(patient) {
   if (badge) { badge.className = `patient-badge ${type}`; }
 
   openModal('modal-badge');
+}
+
+// ============================================================
+// IMPRESSION DU BADGE
+// ============================================================
+function printBadge() {
+  const badgeEl = document.getElementById('badge-container');
+  if (!badgeEl) return;
+
+  const printWindow = window.open('', '_blank', 'width=400,height=600');
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <title>Badge Patient</title>
+      <link rel="stylesheet" href="css/main.css">
+      <style>
+        body { margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f0f0f0; }
+        @media print {
+          body { background: white; padding: 0; }
+          @page { size: 85mm 140mm; margin: 5mm; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="patient-badge">
+        ${badgeEl.innerHTML}
+      </div>
+      <script>window.onload = () => { window.print(); window.close(); }<\/script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
 }
 
 // ============================================================
