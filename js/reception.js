@@ -406,19 +406,11 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 /* ══ RECTO ══════════════════════════════════════════════════ */
 .recto{display:flex;flex-direction:column;background:${gradient}}
 
-/* Clip porte-badge — 4mm */
-.clip{
-  width:38px;height:15px;
-  background:#CBD5E0;
-  border-radius:3px 3px 0 0;
-  margin:0 auto;flex-shrink:0;
-  box-shadow:inset 0 2px 3px rgba(0,0,0,.2)
-}
 
-/* En-tête verte — ~28mm */
+/* En-tête verte — ~32mm (clip supprimé → espace redistribué) */
 .r-top{
   display:flex;flex-direction:column;align-items:center;
-  padding:14px 8px 10px;flex-shrink:0
+  padding:22px 8px 12px;flex-shrink:0
 }
 /* Logo — 15mm ≈ 57px */
 .r-logo{
@@ -479,7 +471,6 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 
 <!-- ══ PAGE 1 : RECTO ═════════════════════════════════════════ -->
 <div class="card-page recto">
-  <div class="clip"></div>
   <div class="r-top">
     <img src="${logoUrl}" class="r-logo" alt="GST">
     <div class="r-title">GST</div>
