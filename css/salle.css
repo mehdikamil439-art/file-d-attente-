@@ -58,6 +58,13 @@
 .salle-hero.psychiatrie  .salle-type-badge { background: var(--psy-light); color: var(--psy-dark); border: 1px solid var(--psy-border); }
 .salle-hero.psychotherapie .salle-type-badge { background: var(--psy2-light); color: var(--psy2-dark); border: 1px solid var(--psy2-border); }
 
+.salle-banner {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+}
+
 .salle-doctor {
   display: flex;
   align-items: center;
