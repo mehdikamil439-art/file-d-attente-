@@ -13,6 +13,13 @@ let realtimeChannel = null;
 let audioCtx = null;
 let _dateActuelle = getAujourdhui(); // Pour détecter le changement de jour
 
+// Configuration Sonore
+const NOTIFICATION_SOUND_URL = 'https://proxy.notificationsounds.com/notification-sounds/ringtone-you-would-be-glad-to-know/download/file-sounds-1350-you-would-be-glad.mp3';
+let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+let lastSoundTime = 0;
+const SOUND_COOLDOWN = 3000; // 3 secondes pour éviter le spam sonore
+const SOUND_VOLUME = 0.4;     // Volume doux (40%)
+
 // ============================================================
 // DÉTECTION MINUIT — Réinitialisation automatique de l'écran
 // ============================================================
@@ -211,100 +218,99 @@ function highlightCard(patientId) {
 }
 
 // ============================================================
-// TONALITE "TEN TEN TEN" (3 bips avant l'annonce)
+// NOTIFICATION SONORE MODERNE (MP3 avec Fallback)
 // ============================================================
 function playChime() {
+  if (!soundEnabled) return Promise.resolve();
+  
+  // Cooldown pour éviter les répétitions agressives
+  const now = Date.now();
+  if (now - lastSoundTime < SOUND_COOLDOWN) return Promise.resolve();
+  lastSoundTime = now;
+
+  return new Promise(resolve => {
+    const audio = new Audio(NOTIFICATION_SOUND_URL);
+    audio.volume = SOUND_VOLUME;
+
+    // Timer de sécurité pour ne pas bloquer l'interface si l'audio met trop de temps
+    const securityTimeout = setTimeout(() => {
+      console.warn('Audio loading timeout - using fallback');
+      playFallbackBips().then(resolve);
+    }, 2000);
+
+    audio.oncanplaythrough = () => {
+      clearTimeout(securityTimeout);
+      audio.play().catch(e => {
+        console.error('Playback failed:', e);
+        playFallbackBips().then(resolve);
+      });
+    };
+
+    audio.onended = () => resolve();
+    
+    audio.onerror = () => {
+      clearTimeout(securityTimeout);
+      console.warn('Audio error - using fallback');
+      playFallbackBips().then(resolve);
+    };
+  });
+}
+
+// Système de secours si le MP3 échoue (3 bips simples)
+function playFallbackBips() {
   return new Promise(resolve => {
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) { resolve(); return; }
-
+      if (!AudioContext) return resolve();
       const ctx = new AudioContext();
-      const totalBips = 3;
-      const bipDuration = 0.18;   // durée de chaque bip (secondes)
-      const bipInterval = 0.38;   // intervalle entre les bips
-      const freq = 880;           // fréquence (la) — ton clair type "ding"
-
-      for (let i = 0; i < totalBips; i++) {
-        const osc  = ctx.createOscillator();
+      const freq = 880;
+      for (let i = 0; i < 3; i++) {
+        const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-
-        const startT = ctx.currentTime + i * bipInterval;
-        const stopT  = startT + bipDuration;
-
-        gain.gain.setValueAtTime(0, startT);
-        gain.gain.linearRampToValueAtTime(0.7, startT + 0.01);
-        gain.gain.linearRampToValueAtTime(0, stopT);
-
-        osc.start(startT);
-        osc.stop(stopT);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.3);
+        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.3);
+        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.3 + 0.01);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + i * 0.3 + 0.2);
+        osc.start(ctx.currentTime + i * 0.3);
+        osc.stop(ctx.currentTime + i * 0.3 + 0.2);
       }
-
-      // Résoudre après la fin du dernier bip
-      setTimeout(() => {
-        ctx.close();
-        resolve();
-      }, (totalBips * bipInterval) * 1000 + 100);
-
-    } catch(e) {
-      console.warn('Chime error:', e);
-      resolve();
-    }
+      setTimeout(() => { ctx.close(); resolve(); }, 1000);
+    } catch(e) { resolve(); }
   });
 }
 
 function playVoiceAnnouncement(numero, salle) {
-  try {
-    if (!('speechSynthesis' in window)) return;
-    
-    // Le texte de l'annonce en arabe
-    const texte = `المرجو من الرقم ${numero} التوجه إلى القاعة رقم ${salle}`;
+  // ANNONCE VOCALE SUPPRIMÉE À LA DEMANDE DE L'UTILISATEUR
+  console.log(`[Notification] Patient ${numero} -> Salle ${salle}`);
+}
 
-    // Fonction pour dire le texte
-    const parler = () => {
-      return new Promise(resolve => {
-        const utterance = new SpeechSynthesisUtterance(texte);
-        utterance.rate = 0.8;
-        utterance.pitch = 1;
-        
-        // Chercher une voix arabe si disponible, sinon laisser par défaut
-        const voices = window.speechSynthesis.getVoices();
-        const arabicVoice = voices.find(v => v.lang.startsWith('ar'));
-        if (arabicVoice) {
-          utterance.voice = arabicVoice;
-          utterance.lang = arabicVoice.lang;
-        } else {
-          utterance.lang = 'ar-SA'; // fallback
-        }
-        
-        utterance.onend = resolve;
-        utterance.onerror = resolve; // Continuer même en cas d'erreur
-        
-        window.speechSynthesis.speak(utterance);
-      });
-    };
+// Fonction utilitaire pour activer/désactiver le son
+function toggleSound(enabled) {
+  soundEnabled = enabled;
+  localStorage.setItem('soundEnabled', enabled);
+  updateSoundUI();
+  console.log('Son ' + (enabled ? 'activé' : 'désactivé'));
+  return enabled;
+}
 
-    // Assurer que le moteur est prêt
-    window.speechSynthesis.resume();
-    window.speechSynthesis.cancel(); // Vider la file d'attente
+function updateSoundUI() {
+  const btn = document.getElementById('btn-toggle-sound');
+  const icon = document.getElementById('sound-icon');
+  const text = document.getElementById('sound-text');
+  if (!btn || !icon || !text) return;
 
-    // Jouer le "ten ten ten" puis l'annonce 2 fois
-    setTimeout(async () => {
-      await playChime();       // 🔔 Bip bip bip
-      await parler();          // 1ère annonce
-      setTimeout(async () => {
-        await playChime();     // 🔔 Bip bip bip
-        parler();              // 2ème annonce
-      }, 800);
-    }, 100);
-
-  } catch(e) { console.error("Erreur vocale :", e); }
+  if (soundEnabled) {
+    icon.textContent = '🔊';
+    text.textContent = 'صوت مفعل';
+    btn.style.background = 'rgba(255,255,255,0.1)';
+    btn.style.color = 'white';
+  } else {
+    icon.textContent = '🔇';
+    text.textContent = 'صوت معطل';
+    btn.style.background = 'rgba(239,68,68,0.2)';
+    btn.style.color = '#FCA5A5';
+  }
 }
 
 // ============================================================
@@ -338,15 +344,19 @@ document.addEventListener('DOMContentLoaded', async () => {
       // 1. Cacher l'overlay
       overlay.style.display = 'none';
       
-      // 2. Débloquer la synthèse vocale avec un petit test
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.resume();
-        const unlockUtterance = new SpeechSynthesisUtterance('Test système');
-        unlockUtterance.volume = 0; // silencieux
-        window.speechSynthesis.speak(unlockUtterance);
-      }
+      // 2. Initialiser l'UI du son
+      updateSoundUI();
       
-      // 3. Lancer l'application
+      // 3. Configurer le listener du bouton
+      const btn = document.getElementById('btn-toggle-sound');
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Éviter de déclencher d'autres événements
+          toggleSound(!soundEnabled);
+        });
+      }
+
+      // 4. Lancer l'application
       initAffichage();
     });
   } else {
