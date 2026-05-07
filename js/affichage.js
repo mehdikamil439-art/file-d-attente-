@@ -13,13 +13,6 @@ let realtimeChannel = null;
 let audioCtx = null;
 let _dateActuelle = getAujourdhui(); // Pour détecter le changement de jour
 
-// Configuration Sonore
-const NOTIFICATION_SOUND_URL = 'https://proxy.notificationsounds.com/notification-sounds/ringtone-you-would-be-glad-to-know/download/file-sounds-1350-you-would-be-glad.mp3';
-let soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-let lastSoundTime = 0;
-const SOUND_COOLDOWN = 3000; // 3 secondes pour éviter le spam sonore
-const SOUND_VOLUME = 0.4;     // Volume doux (40%)
-
 // ============================================================
 // DÉTECTION MINUIT — Réinitialisation automatique de l'écran
 // ============================================================
@@ -218,45 +211,35 @@ function highlightCard(patientId) {
 }
 
 // ============================================================
-// NOTIFICATION SONORE MODERNE (MP3 avec Fallback)
+// NOTIFICATION SONORE MP3 (assets/notification.mp3)
 // ============================================================
+let lastSoundTime = 0;
 function playChime() {
-  if (!soundEnabled) return Promise.resolve();
-  
-  // Cooldown pour éviter les répétitions agressives
   const now = Date.now();
-  if (now - lastSoundTime < SOUND_COOLDOWN) return Promise.resolve();
+  if (now - lastSoundTime < 2000) return Promise.resolve();
   lastSoundTime = now;
 
   return new Promise(resolve => {
-    const audio = new Audio(NOTIFICATION_SOUND_URL);
-    audio.volume = SOUND_VOLUME;
-
-    // Timer de sécurité pour ne pas bloquer l'interface si l'audio met trop de temps
-    const securityTimeout = setTimeout(() => {
-      console.warn('Audio loading timeout - using fallback');
-      playFallbackBips().then(resolve);
-    }, 2000);
-
-    audio.oncanplaythrough = () => {
-      clearTimeout(securityTimeout);
-      audio.play().catch(e => {
-        console.error('Playback failed:', e);
-        playFallbackBips().then(resolve);
-      });
-    };
-
-    audio.onended = () => resolve();
+    const audio = new Audio('assets/notification.mp3');
+    audio.volume = 0.5;
     
-    audio.onerror = () => {
-      clearTimeout(securityTimeout);
-      console.warn('Audio error - using fallback');
+    // Sécurité si le son met trop de temps à charger
+    const timeout = setTimeout(() => {
+      console.warn('MP3 timeout, fallback');
       playFallbackBips().then(resolve);
-    };
+    }, 1500);
+
+    audio.play().then(() => {
+      clearTimeout(timeout);
+      audio.onended = resolve;
+    }).catch(err => {
+      clearTimeout(timeout);
+      console.warn('MP3 play failed, fallback', err);
+      playFallbackBips().then(resolve);
+    });
   });
 }
 
-// Système de secours si le MP3 échoue (3 bips simples)
 function playFallbackBips() {
   return new Promise(resolve => {
     try {
@@ -281,36 +264,8 @@ function playFallbackBips() {
 }
 
 function playVoiceAnnouncement(numero, salle) {
-  // ANNONCE VOCALE SUPPRIMÉE À LA DEMANDE DE L'UTILISATEUR
+  // ANNONCE VOCALE SUPPRIMÉE
   console.log(`[Notification] Patient ${numero} -> Salle ${salle}`);
-}
-
-// Fonction utilitaire pour activer/désactiver le son
-function toggleSound(enabled) {
-  soundEnabled = enabled;
-  localStorage.setItem('soundEnabled', enabled);
-  updateSoundUI();
-  console.log('Son ' + (enabled ? 'activé' : 'désactivé'));
-  return enabled;
-}
-
-function updateSoundUI() {
-  const btn = document.getElementById('btn-toggle-sound');
-  const icon = document.getElementById('sound-icon');
-  const text = document.getElementById('sound-text');
-  if (!btn || !icon || !text) return;
-
-  if (soundEnabled) {
-    icon.textContent = '🔊';
-    text.textContent = 'صوت مفعل';
-    btn.style.background = 'rgba(255,255,255,0.1)';
-    btn.style.color = 'white';
-  } else {
-    icon.textContent = '🔇';
-    text.textContent = 'صوت معطل';
-    btn.style.background = 'rgba(239,68,68,0.2)';
-    btn.style.color = '#FCA5A5';
-  }
 }
 
 // ============================================================
@@ -344,19 +299,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       // 1. Cacher l'overlay
       overlay.style.display = 'none';
       
-      // 2. Initialiser l'UI du son
-      updateSoundUI();
-      
-      // 3. Configurer le listener du bouton
-      const btn = document.getElementById('btn-toggle-sound');
-      if (btn) {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation(); // Éviter de déclencher d'autres événements
-          toggleSound(!soundEnabled);
-        });
+      // 2. Débloquer la synthèse vocale avec un petit test
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.resume();
+        const unlockUtterance = new SpeechSynthesisUtterance('Test système');
+        unlockUtterance.volume = 0; // silencieux
+        window.speechSynthesis.speak(unlockUtterance);
       }
-
-      // 4. Lancer l'application
+      
+      // 3. Lancer l'application
       initAffichage();
     });
   } else {
