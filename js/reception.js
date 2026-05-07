@@ -376,6 +376,14 @@ function printBadge() {
   const logoUrl = window.location.origin + '/assets/logoGST.png';
 
   // ── Ouvrir et écrire la fenêtre d'impression ────────────────
+  // Tailles calculées pour CR80 (54mm × 86mm) à 96dpi CSS (1mm = 3.78px)
+  // Répartition des zones :
+  //   Clip   :  4mm = 15px
+  //   Header : 28mm = 106px  (logo 15mm, titre 5mm, padding 8mm)
+  //   Vague  :  8mm = 30px
+  //   Corps  : 33mm = 125px  (flexible)
+  //   Footer : 13mm = 49px
+  //   Total  : 86mm ✓
   const pw = window.open('', '_blank', 'width=600,height=800');
   pw.document.write(`<!DOCTYPE html>
 <html lang="fr">
@@ -388,29 +396,88 @@ function printBadge() {
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 @page{size:54mm 86mm;margin:0}
 body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
-.card-page{width:54mm;height:86mm;overflow:hidden;page-break-after:always;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.card-page{
+  width:54mm;height:86mm;overflow:hidden;
+  page-break-after:always;
+  print-color-adjust:exact;-webkit-print-color-adjust:exact
+}
 .card-page:last-child{page-break-after:auto}
+
+/* ══ RECTO ══════════════════════════════════════════════════ */
 .recto{display:flex;flex-direction:column;background:${gradient}}
-.clip{width:36px;height:16px;background:#CBD5E0;border-radius:3px 3px 0 0;margin:0 auto;flex-shrink:0}
-.r-top{display:flex;flex-direction:column;align-items:center;padding:7px 8px 5px;flex-shrink:0}
-.r-logo{width:28px;height:28px;object-fit:contain;filter:brightness(0) invert(1);margin-bottom:3px}
-.r-title{font-size:13px;font-weight:900;color:rgba(255,255,255,.95);letter-spacing:3px}
+
+/* Clip porte-badge — 4mm */
+.clip{
+  width:38px;height:15px;
+  background:#CBD5E0;
+  border-radius:3px 3px 0 0;
+  margin:0 auto;flex-shrink:0;
+  box-shadow:inset 0 2px 3px rgba(0,0,0,.2)
+}
+
+/* En-tête verte — ~28mm */
+.r-top{
+  display:flex;flex-direction:column;align-items:center;
+  padding:14px 8px 10px;flex-shrink:0
+}
+/* Logo — 15mm ≈ 57px */
+.r-logo{
+  width:57px;height:57px;
+  object-fit:contain;
+  filter:brightness(0) invert(1);
+  margin-bottom:5px
+}
+/* "GST" — 5mm ≈ 19px */
+.r-title{font-size:19px;font-weight:900;color:rgba(255,255,255,.95);letter-spacing:3px}
+
+/* Vague — 8mm ≈ 30px */
 .r-wave{width:100%;line-height:0;flex-shrink:0}
-.r-wave svg{width:100%;height:14px;display:block}
-.r-body{background:white;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 8px 6px}
-.r-num{font-size:40px;font-weight:900;line-height:1;color:${couleur};margin-bottom:5px}
-.r-type-ar{font-size:9.5px;font-weight:700;color:${couleur};text-align:center;direction:rtl;line-height:1.5}
-.r-type-fr{font-size:8.5px;font-weight:600;color:${couleur};text-align:center;margin-top:2px}
-.r-footer{background:${footerBg};padding:5px 8px 7px;display:flex;flex-direction:column;align-items:center;gap:1px;flex-shrink:0}
-.r-footer-ar{font-size:6px;color:rgba(255,255,255,.9);direction:rtl;text-align:center;line-height:1.5}
-.r-footer-fr{font-size:5.5px;color:rgba(255,255,255,.75);text-align:center}
-.verso{background:${gradient};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
-.v-logo{width:72px;filter:brightness(0) invert(1)}
+.r-wave svg{width:100%;height:30px;display:block}
+
+/* Corps blanc — flexible ~33mm */
+.r-body{
+  background:white;flex:1;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:6px 10px 8px
+}
+/* Numéro — 20mm ≈ 76px */
+.r-num{font-size:76px;font-weight:900;line-height:1;color:${couleur};margin-bottom:6px}
+/* Type arabe — 4.5mm ≈ 17px */
+.r-type-ar{font-size:17px;font-weight:700;color:${couleur};text-align:center;direction:rtl;line-height:1.4}
+/* Type français — 3.5mm ≈ 13px */
+.r-type-fr{font-size:13px;font-weight:600;color:${couleur};text-align:center;margin-top:3px}
+
+/* Footer — ~13mm */
+.r-footer{
+  background:${footerBg};
+  padding:7px 10px 9px;
+  display:flex;flex-direction:column;
+  align-items:center;gap:2px;flex-shrink:0
+}
+/* Footer arabe — 3mm ≈ 11px */
+.r-footer-ar{font-size:11px;color:rgba(255,255,255,.9);direction:rtl;text-align:center;line-height:1.4}
+/* Footer français — 2.5mm ≈ 9.5px */
+.r-footer-fr{font-size:9.5px;color:rgba(255,255,255,.75);text-align:center}
+
+/* ══ VERSO ══════════════════════════════════════════════════ */
+.verso{
+  background:${gradient};
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px
+}
+.v-logo{width:19mm;filter:brightness(0) invert(1)}
 .v-title{font-size:20px;font-weight:900;color:white;letter-spacing:6px}
-.v-sub{font-size:6.5px;color:rgba(255,255,255,.75);text-align:center;padding:0 12px;direction:rtl;line-height:1.6}
+.v-sub{
+  font-size:7px;color:rgba(255,255,255,.8);
+  text-align:center;padding:0 10px;
+  direction:rtl;line-height:1.6
+}
 </style>
 </head>
 <body>
+
+<!-- ══ PAGE 1 : RECTO ═════════════════════════════════════════ -->
 <div class="card-page recto">
   <div class="clip"></div>
   <div class="r-top">
@@ -418,8 +485,8 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
     <div class="r-title">GST</div>
   </div>
   <div class="r-wave">
-    <svg viewBox="0 0 240 14" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,14 Q60,0 120,7 Q180,14 240,3 L240,14 Z" fill="white"/>
+    <svg viewBox="0 0 240 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 Q60,0 120,15 Q180,30 240,10 L240,30 Z" fill="white"/>
     </svg>
   </div>
   <div class="r-body">
@@ -432,20 +499,28 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
     <div class="r-footer-fr">Hôpital Universitaire de Psychiatrie Mohammed VI -Tanger-</div>
   </div>
 </div>
+
+<!-- ══ PAGE 2 : VERSO ════════════════════════════════════════ -->
 <div class="card-page verso">
   <img src="${logoUrl}" class="v-logo" alt="GST">
   <div class="v-title">GST</div>
   <div class="v-sub">المجموعة الصحية الترابية<br>Groupe de Santé Territorial</div>
 </div>
+
 <script>
-  if(document.fonts&&document.fonts.ready){
-    document.fonts.ready.then(function(){setTimeout(function(){window.print();window.close();},500);});
-  }else{setTimeout(function(){window.print();window.close();},1500);}
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){
+      setTimeout(function(){ window.print(); window.close(); }, 600);
+    });
+  } else {
+    setTimeout(function(){ window.print(); window.close(); }, 1500);
+  }
 <\/script>
 </body>
 </html>`);
   pw.document.close();
 }
+
 
 // ============================================================
 // TABLEAU DES PATIENTS
