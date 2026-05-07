@@ -407,50 +407,50 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 .recto{display:flex;flex-direction:column;background:${gradient}}
 
 
-/* En-tête verte — ~32mm (clip supprimé → espace redistribué) */
+/* En-tête verte — ~30mm */
 .r-top{
   display:flex;flex-direction:column;align-items:center;
-  padding:22px 8px 12px;flex-shrink:0
+  padding:16px 8px 8px;flex-shrink:0
 }
-/* Logo — 15mm ≈ 57px */
+/* Logo — 10mm ≈ 38px */
 .r-logo{
-  width:57px;height:57px;
+  width:38px;height:38px;
   object-fit:contain;
   filter:brightness(0) invert(1);
-  margin-bottom:5px
+  margin-bottom:4px
 }
-/* "GST" — 5mm ≈ 19px */
-.r-title{font-size:19px;font-weight:900;color:rgba(255,255,255,.95);letter-spacing:3px}
+/* "GST" — 4.5mm ≈ 17px */
+.r-title{font-size:17px;font-weight:900;color:rgba(255,255,255,.95);letter-spacing:3px}
 
-/* Vague — 8mm ≈ 30px */
+/* Vague — 7mm ≈ 26px */
 .r-wave{width:100%;line-height:0;flex-shrink:0}
-.r-wave svg{width:100%;height:30px;display:block}
+.r-wave svg{width:100%;height:26px;display:block}
 
-/* Corps blanc — flexible ~33mm */
+/* Corps blanc — flexible */
 .r-body{
   background:white;flex:1;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
-  padding:6px 10px 8px
+  padding:4px 8px 4px
 }
-/* Numéro — 20mm ≈ 76px */
-.r-num{font-size:76px;font-weight:900;line-height:1;color:${couleur};margin-bottom:6px}
-/* Type arabe — 4.5mm ≈ 17px */
-.r-type-ar{font-size:17px;font-weight:700;color:${couleur};text-align:center;direction:rtl;line-height:1.4}
-/* Type français — 3.5mm ≈ 13px */
-.r-type-fr{font-size:13px;font-weight:600;color:${couleur};text-align:center;margin-top:3px}
+/* Numéro — 16mm ≈ 62px */
+.r-num{font-size:62px;font-weight:900;line-height:1;color:${couleur};margin-bottom:4px}
+/* Type arabe — 3mm ≈ 11px */
+.r-type-ar{font-size:11px;font-weight:700;color:${couleur};text-align:center;direction:rtl;line-height:1.35}
+/* Type français — 2.5mm ≈ 9px */
+.r-type-fr{font-size:9px;font-weight:600;color:${couleur};text-align:center;margin-top:2px}
 
-/* Footer — ~13mm */
+/* Footer — ~16mm */
 .r-footer{
   background:${footerBg};
-  padding:7px 10px 9px;
+  padding:5px 8px 6px;
   display:flex;flex-direction:column;
   align-items:center;gap:2px;flex-shrink:0
 }
-/* Footer arabe — 3mm ≈ 11px */
-.r-footer-ar{font-size:11px;color:rgba(255,255,255,.9);direction:rtl;text-align:center;line-height:1.4}
-/* Footer français — 2.5mm ≈ 9.5px */
-.r-footer-fr{font-size:9.5px;color:rgba(255,255,255,.75);text-align:center}
+/* Footer arabe — 6.5px */
+.r-footer-ar{font-size:6.5px;color:rgba(255,255,255,.95);direction:rtl;text-align:center;line-height:1.35;font-weight:600}
+/* Footer français — 6px */
+.r-footer-fr{font-size:6px;color:rgba(255,255,255,.8);text-align:center}
 
 /* ══ VERSO ══════════════════════════════════════════════════ */
 .verso{
