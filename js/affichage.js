@@ -213,30 +213,29 @@ function highlightCard(patientId) {
 // ============================================================
 // NOTIFICATION SONORE MP3 (assets/notification.mp3)
 // ============================================================
-let lastSoundTime = 0;
+let notificationAudio = null;
+
 function playChime() {
-  const now = Date.now();
-  if (now - lastSoundTime < 2000) return Promise.resolve();
-  lastSoundTime = now;
-
   return new Promise(resolve => {
-    const audio = new Audio('assets/notification.mp3');
-    audio.volume = 0.5;
-    
-    // Sécurité si le son met trop de temps à charger
-    const timeout = setTimeout(() => {
-      console.warn('MP3 timeout, fallback');
+    // Si l'audio n'est pas encore initialisé, on utilise le fallback direct
+    if (!notificationAudio) {
       playFallbackBips().then(resolve);
-    }, 1500);
+      return;
+    }
 
-    audio.play().then(() => {
-      clearTimeout(timeout);
-      audio.onended = resolve;
-    }).catch(err => {
-      clearTimeout(timeout);
-      console.warn('MP3 play failed, fallback', err);
-      playFallbackBips().then(resolve);
-    });
+    notificationAudio.volume = 1.0; // Volume maximum
+    notificationAudio.currentTime = 0;
+    
+    notificationAudio.play()
+      .then(() => {
+        // Résoudre dès que le son commence ou finit
+        // On résout après 1s pour ne pas bloquer l'interface
+        setTimeout(resolve, 1000);
+      })
+      .catch(err => {
+        console.warn('MP3 play failed, using fallback:', err);
+        playFallbackBips().then(resolve);
+      });
   });
 }
 
@@ -253,12 +252,12 @@ function playFallbackBips() {
         osc.connect(gain); gain.connect(ctx.destination);
         osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.3);
         gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.3);
-        gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + i * 0.3 + 0.01);
+        gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + i * 0.3 + 0.01);
         gain.gain.linearRampToValueAtTime(0, ctx.currentTime + i * 0.3 + 0.2);
         osc.start(ctx.currentTime + i * 0.3);
         osc.stop(ctx.currentTime + i * 0.3 + 0.2);
       }
-      setTimeout(() => { ctx.close(); resolve(); }, 1000);
+      setTimeout(() => { ctx.close(); resolve(); }, 1200);
     } catch(e) { resolve(); }
   });
 }
@@ -296,22 +295,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   if (overlay) {
     overlay.addEventListener('click', () => {
-      // 1. Cacher l'overlay
-      overlay.style.display = 'none';
+      // 1. Initialiser l'objet Audio global au clic (déblocage navigateur)
+      notificationAudio = new Audio('assets/notification.mp3');
+      notificationAudio.load();
       
-      // 2. Débloquer la synthèse vocale avec un petit test
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.resume();
-        const unlockUtterance = new SpeechSynthesisUtterance('Test système');
-        unlockUtterance.volume = 0; // silencieux
-        window.speechSynthesis.speak(unlockUtterance);
-      }
+      // Petit test silencieux pour débloquer le contexte
+      notificationAudio.play().then(() => {
+        notificationAudio.pause();
+        notificationAudio.currentTime = 0;
+      }).catch(e => console.warn('Audio unlock test failed:', e));
+
+      // 2. Cacher l'overlay
+      overlay.style.display = 'none';
       
       // 3. Lancer l'application
       initAffichage();
     });
   } else {
-    // Fallback au cas où l'overlay n'est pas là
     initAffichage();
   }
 });
