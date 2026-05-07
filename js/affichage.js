@@ -211,7 +211,7 @@ function highlightCard(patientId) {
 }
 
 // ============================================================
-// TONALITE "CHIME" (Style Gare de Train SNCF/ONCF)
+// TONALITE "TEN TEN TEN" (3 bips avant l'annonce)
 // ============================================================
 function playChime() {
   return new Promise(resolve => {
@@ -220,39 +220,37 @@ function playChime() {
       if (!AudioContext) { resolve(); return; }
 
       const ctx = new AudioContext();
-      
-      // Notes: Sol4, Do5, Sol4, Mi4 (Mélodie iconique)
-      const notes = [
-        { freq: 392.00, time: 0.0 }, // G4
-        { freq: 523.25, time: 0.5 }, // C5
-        { freq: 392.00, time: 1.0 }, // G4
-        { freq: 329.63, time: 1.5 }  // E4
-      ];
+      const totalBips = 3;
+      const bipDuration = 0.18;   // durée de chaque bip (secondes)
+      const bipInterval = 0.38;   // intervalle entre les bips
+      const freq = 880;           // fréquence (la) — ton clair type "ding"
 
-      notes.forEach(note => {
-        const osc = ctx.createOscillator();
+      for (let i = 0; i < totalBips; i++) {
+        const osc  = ctx.createOscillator();
         const gain = ctx.createGain();
-
-        osc.type = 'sine'; // Son pur
-        osc.frequency.setValueAtTime(note.freq, ctx.currentTime + note.time);
-
-        // Enveloppe de cloche (attaque rapide, déclin lent)
-        gain.gain.setValueAtTime(0, ctx.currentTime + note.time);
-        gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + note.time + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + note.time + 0.8);
 
         osc.connect(gain);
         gain.connect(ctx.destination);
 
-        osc.start(ctx.currentTime + note.time);
-        osc.stop(ctx.currentTime + note.time + 0.9);
-      });
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
 
-      // On attend la fin de la mélodie (environ 2.5s) avant de lancer la voix
+        const startT = ctx.currentTime + i * bipInterval;
+        const stopT  = startT + bipDuration;
+
+        gain.gain.setValueAtTime(0, startT);
+        gain.gain.linearRampToValueAtTime(0.7, startT + 0.01);
+        gain.gain.linearRampToValueAtTime(0, stopT);
+
+        osc.start(startT);
+        osc.stop(stopT);
+      }
+
+      // Résoudre après la fin du dernier bip
       setTimeout(() => {
         ctx.close();
         resolve();
-      }, 2500);
+      }, (totalBips * bipInterval) * 1000 + 100);
 
     } catch(e) {
       console.warn('Chime error:', e);
