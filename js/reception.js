@@ -407,21 +407,21 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 .recto{display:flex;flex-direction:column;background:${gradient}}
 
 
-/* En-tête verte — ~30mm */
+/* En-tête verte — ~34mm = espace couleur dominant */
 .r-top{
   display:flex;flex-direction:column;align-items:center;
-  padding:16px 8px 8px;flex-shrink:0
+  padding:20px 8px 22px;flex-shrink:0
 }
-/* Logo — remplit l'en-tête verte */
+/* Logo — remplit l'en-tête verte avec halo lumineux */
 .r-logo{
   width:80px;height:80px;
   object-fit:contain;
-  filter:brightness(0) invert(1);
+  filter:brightness(0) invert(1) drop-shadow(0 0 10px rgba(255,255,255,0.35));
 }
 
-/* Vague — 7mm ≈ 26px */
+/* Vague en S — plus élégante et profonde */
 .r-wave{width:100%;line-height:0;flex-shrink:0}
-.r-wave svg{width:100%;height:26px;display:block}
+.r-wave svg{width:100%;height:28px;display:block}
 
 /* Corps blanc — flexible */
 .r-body{
@@ -437,16 +437,16 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 /* Type français — 2.5mm ≈ 9px */
 .r-type-fr{font-size:9px;font-weight:600;color:${couleur};text-align:center;margin-top:2px}
 
-/* Footer — ~16mm */
+/* Footer ultra-compact — ~10mm */
 .r-footer{
   background:${footerBg};
   padding:5px 8px 6px;
   display:flex;flex-direction:column;
-  align-items:center;gap:2px;flex-shrink:0
+  align-items:center;gap:1px;flex-shrink:0
 }
-/* Footer arabe — 6.5px */
-.r-footer-ar{font-size:6.5px;color:rgba(255,255,255,.95);direction:rtl;text-align:center;line-height:1.35;font-weight:600}
-/* Footer français — 6px */
+/* Footer arabe */
+.r-footer-ar{font-size:6.5px;color:rgba(255,255,255,.95);direction:rtl;text-align:center;line-height:1.3;font-weight:600}
+/* Footer français */
 .r-footer-fr{font-size:6px;color:rgba(255,255,255,.8);text-align:center}
 
 /* ══ VERSO ══════════════════════════════════════════════════ */
@@ -472,8 +472,8 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
     <img src="${logoUrl}" class="r-logo" alt="GST">
   </div>
   <div class="r-wave">
-    <svg viewBox="0 0 240 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,30 Q60,0 120,15 Q180,30 240,10 L240,30 Z" fill="white"/>
+    <svg viewBox="0 0 240 28" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,28 C60,4 120,22 180,10 C210,4 230,18 240,14 L240,28 Z" fill="white"/>
     </svg>
   </div>
   <div class="r-body">
