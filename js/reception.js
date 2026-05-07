@@ -410,17 +410,14 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 /* En-tête verte — ~30mm */
 .r-top{
   display:flex;flex-direction:column;align-items:center;
-  padding:16px 8px 8px;flex-shrink:0
+  padding:12px 8px 12px;flex-shrink:0
 }
-/* Logo — 10mm ≈ 38px */
+/* Logo — remplit l'espace vert */
 .r-logo{
-  width:38px;height:38px;
+  width:85px;height:85px;
   object-fit:contain;
   filter:brightness(0) invert(1);
-  margin-bottom:4px
 }
-/* "GST" — 4.5mm ≈ 17px */
-.r-title{font-size:17px;font-weight:900;color:rgba(255,255,255,.95);letter-spacing:3px}
 
 /* Vague — 7mm ≈ 26px */
 .r-wave{width:100%;line-height:0;flex-shrink:0}
@@ -473,7 +470,6 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 <div class="card-page recto">
   <div class="r-top">
     <img src="${logoUrl}" class="r-logo" alt="GST">
-    <div class="r-title">GST</div>
   </div>
   <div class="r-wave">
     <svg viewBox="0 0 240 30" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -494,7 +490,6 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 <!-- ══ PAGE 2 : VERSO ════════════════════════════════════════ -->
 <div class="card-page verso">
   <img src="${logoUrl}" class="v-logo" alt="GST">
-  <div class="v-title">GST</div>
   <div class="v-sub">المجموعة الصحية الترابية<br>Groupe de Santé Territorial</div>
 </div>
 
