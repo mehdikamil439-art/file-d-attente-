@@ -430,11 +430,11 @@ body{width:54mm;font-family:'Cairo',Arial,sans-serif;background:white}
 .r-body{
   background:white;flex:1;
   display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:4px 8px 4px
+  align-items:center;justify-content:flex-start;
+  padding:10px 8px 4px
 }
-/* Numéro — 16mm ≈ 62px */
-.r-num{font-size:62px;font-weight:900;line-height:1;color:${couleur};margin-bottom:4px}
+/* Numéro — 18mm ≈ 70px */
+.r-num{font-size:70px;font-weight:900;line-height:1;color:${couleur};margin-bottom:4px}
 /* Type arabe — 3mm ≈ 11px */
 .r-type-ar{font-size:11px;font-weight:700;color:${couleur};text-align:center;direction:rtl;line-height:1.35}
 /* Type français — 2.5mm ≈ 9px */
