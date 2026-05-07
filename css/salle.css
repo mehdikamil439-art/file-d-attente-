@@ -13,18 +13,15 @@
   border-bottom: 1px solid var(--border);
   position: relative;
   overflow: hidden;
+  background: #FFFFFF;
 }
 
 .salle-hero::before {
   content: '';
   position: absolute;
   inset: 0;
-  opacity: .06;
-  z-index: 0;
+  display: none;
 }
-
-.salle-hero.psychiatrie::before   { background: var(--psy-grad); }
-.salle-hero.psychotherapie::before { background: var(--psy2-grad); }
 
 .salle-hero > * { position: relative; z-index: 1; }
 
