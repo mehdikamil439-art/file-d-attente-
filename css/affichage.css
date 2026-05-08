@@ -135,9 +135,10 @@ html, body {
   background-image: url('../assets/hopital.jpeg');
   background-size: cover;
   background-position: center;
-  filter: blur(8px) brightness(0.35);
-  transform: scale(1.05); /* Évite les bords blancs dus au flou */
+  filter: blur(4px) brightness(0.7);
+  transform: scale(1.05);
   z-index: 0;
+  opacity: 0.75;
 }
 
 /* S'assurer que le contenu est au-dessus du fond */
@@ -340,13 +341,7 @@ html, body {
    ÉTAT VIDE
    ============================================================ */
 .tv-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  gap: 16px;
-  opacity: .7;
+  display: none;
 }
 
 .tv-empty-icon { font-size: 64px; filter: drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
