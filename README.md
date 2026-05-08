@@ -1,7 +1,7 @@
-# 🏥 Système de File d'Attente — CHU Psychiatrique Tanger
+# 🏥 Système de File d'Attente — Hôpital Universitaire Mohammed VI de Psychiatrie -Tanger-
 
-> Hôpital Universitaire Psychiatrique — Tanger  
-> مستشفى الجامعي للطب النفسي - طنجة
+> Hôpital Universitaire Mohammed VI de Psychiatrie -Tanger-  
+> المستشفى الجامعي محمد السادس للأمراض العقلية والنفسية - طنجة
 
 ---
 
