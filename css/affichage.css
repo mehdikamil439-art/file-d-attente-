@@ -132,7 +132,7 @@ html, body {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: url('../assets/hopital.jpg');
+  background-image: url('../assets/hopital.jpeg');
   background-size: cover;
   background-position: center;
   filter: blur(8px) brightness(0.35);
