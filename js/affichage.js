@@ -108,7 +108,8 @@ function subscribeRealtime() {
           if (isNew && p.statut === 'appele') {
             const numero = data.numero_passage;
             const salle = data.salles ? data.salles.numero : 1;
-            playVoiceAnnouncement(numero, salle);
+            playChime();                          // 🔔 CARILLON
+            playVoiceAnnouncement(numero, salle); // (log uniquement)
             highlightCard(p.id);
           }
         }
