@@ -124,15 +124,36 @@ html, body {
   padding: 24px 28px 16px;
   gap: 16px;
   overflow: hidden;
+  position: relative;
+}
+
+/* Photo de l'hôpital en fond flou */
+.tv-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('../assets/hopital.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(8px) brightness(0.35);
+  transform: scale(1.05); /* Évite les bords blancs dus au flou */
+  z-index: 0;
+}
+
+/* S'assurer que le contenu est au-dessus du fond */
+.tv-body > * {
+  position: relative;
+  z-index: 1;
 }
 
 .tv-section-title {
   font-size: 13px;
   font-weight: 700;
-  color: var(--tv-muted);
+  color: rgba(255,255,255,0.8);
   text-align: center;
   letter-spacing: 3px;
   text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0,0,0,.6);
 }
 
 /* Grille badges */
@@ -325,11 +346,11 @@ html, body {
   justify-content: center;
   flex: 1;
   gap: 16px;
-  opacity: .35;
+  opacity: .7;
 }
 
-.tv-empty-icon { font-size: 64px; }
-.tv-empty-text { font-size: 22px; font-weight: 700; color: var(--tv-muted); }
+.tv-empty-icon { font-size: 64px; filter: drop-shadow(0 2px 8px rgba(0,0,0,.5)); }
+.tv-empty-text { font-size: 22px; font-weight: 700; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.8); }
 
 /* ============================================================
    TICKER BAS
