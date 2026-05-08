@@ -211,54 +211,69 @@ function highlightCard(patientId) {
 }
 
 // ============================================================
-// NOTIFICATION SONORE MP3 (assets/notification.mp3)
+// CARILLON UNIVERSEL GARE / HÔPITAL (SNCF Style)
+// Sol4 → Do5 → Sol4 → Mi4 — Web Audio API (pas de fichier requis)
 // ============================================================
-let notificationAudio = null;
-
 function playChime() {
   return new Promise(resolve => {
-    // Si l'audio n'est pas encore initialisé, on utilise le fallback direct
-    if (!notificationAudio) {
-      playFallbackBips().then(resolve);
-      return;
-    }
-
-    notificationAudio.volume = 1.0; // Volume maximum
-    notificationAudio.currentTime = 0;
-    
-    notificationAudio.play()
-      .then(() => {
-        // Résoudre dès que le son commence ou finit
-        // On résout après 1s pour ne pas bloquer l'interface
-        setTimeout(resolve, 1000);
-      })
-      .catch(err => {
-        console.warn('MP3 play failed, using fallback:', err);
-        playFallbackBips().then(resolve);
-      });
-  });
-}
-
-function playFallbackBips() {
-  return new Promise(resolve => {
     try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return resolve();
-      const ctx = new AudioContext();
-      const freq = 880;
-      for (let i = 0; i < 3; i++) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) { resolve(); return; }
+      const ctx = new AudioCtx();
+
+      // 4 notes du carillon universellement reconnu (Sol Do Sol Mi)
+      const notes = [
+        { freq: 392.00, start: 0.0 },   // Sol4
+        { freq: 523.25, start: 0.55 },  // Do5
+        { freq: 392.00, start: 1.10 },  // Sol4
+        { freq: 329.63, start: 1.65 },  // Mi4
+      ];
+
+      const masterGain = ctx.createGain();
+      masterGain.gain.setValueAtTime(0.7, ctx.currentTime);
+      masterGain.connect(ctx.destination);
+
+      notes.forEach(({ freq, start }) => {
+        // Oscillateur principal
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.3);
-        gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.3);
-        gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + i * 0.3 + 0.01);
-        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + i * 0.3 + 0.2);
-        osc.start(ctx.currentTime + i * 0.3);
-        osc.stop(ctx.currentTime + i * 0.3 + 0.2);
-      }
-      setTimeout(() => { ctx.close(); resolve(); }, 1200);
-    } catch(e) { resolve(); }
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+        osc.connect(gain);
+        gain.connect(masterGain);
+
+        const t = ctx.currentTime + start;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(1.0, t + 0.02);       // Attaque rapide
+        gain.gain.exponentialRampToValueAtTime(0.3, t + 0.4);   // Déclin cloche
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 1.2); // Queue longue
+
+        osc.start(t);
+        osc.stop(t + 1.2);
+
+        // Légère harmonique pour enrichir le son
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(freq * 2, ctx.currentTime + start);
+        osc2.connect(gain2);
+        gain2.connect(masterGain);
+
+        gain2.gain.setValueAtTime(0, t);
+        gain2.gain.linearRampToValueAtTime(0.2, t + 0.02);
+        gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+
+        osc2.start(t);
+        osc2.stop(t + 0.6);
+      });
+
+      // Durée totale : 1.65s (4e note) + 1.2s (queue) = ~2.9s
+      setTimeout(() => { ctx.close(); resolve(); }, 3000);
+
+    } catch(e) {
+      console.warn('Chime error:', e);
+      resolve();
+    }
   });
 }
 
@@ -295,20 +310,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   if (overlay) {
     overlay.addEventListener('click', () => {
-      // 1. Initialiser l'objet Audio global au clic (déblocage navigateur)
-      notificationAudio = new Audio('assets/notification.mp3');
-      notificationAudio.load();
-      
-      // Petit test silencieux pour débloquer le contexte
-      notificationAudio.play().then(() => {
-        notificationAudio.pause();
-        notificationAudio.currentTime = 0;
-      }).catch(e => console.warn('Audio unlock test failed:', e));
+      // Débloquer le contexte AudioContext via un clic utilisateur
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) {
+        const ctx = new AudioCtx();
+        ctx.resume().then(() => ctx.close());
+      }
 
-      // 2. Cacher l'overlay
       overlay.style.display = 'none';
-      
-      // 3. Lancer l'application
       initAffichage();
     });
   } else {
